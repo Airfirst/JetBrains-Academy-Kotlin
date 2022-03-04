@@ -1,0 +1,232 @@
+Description
+Now, let's change the font of the text. The new font will be larger and will consist of multiple rows and columns of standard console symbols.
+
+The new font is shown below:
+
+____ ___  ____ ___  ____ ____ ____ _  _ _  _ _  _ _    _  _
+|__| |__] |    |  \ |___ |___ | __ |__| |  | |_/  |    |\/|
+|  | |__] |___ |__/ |___ |    |__] |  | | _| | \_ |___ |  |
+_  _ ____ ___  ____ ____ ____ ___ _  _ _  _ _ _ _ _  _ _   _ ___ 
+|\ | |  | |__] |  | |__/ [__   |  |  | |  | | | |  \/   \_/    / 
+| \| |__| |    |_\| |  \ ___]  |  |__|  \/  |_|_| _/\_   |    /__
+
+The tag contains the name and the status.
+
+The name includes the first and the last name separated by a space. It should be printed using the provided font.
+
+The status could be "VIP", "Employee", "Speaker", "Administrator", "Participant", or something else. 
+These statuses should appear on the tag below the person's name. This information is not as important as the name, so it should be printed in a smaller font.
+
+In some cases, the width of the tag may have an even number of symbols, while the status has an odd number of symbols (or vice versa). 
+In these cases, you cannot generate a horizontally centered status, since it will always be offset by one extra space on the left or on the right. 
+In this case, your program should move the status to the left so there is one space less to the left of the status than to the right.
+
+package signature
+
+fun main() {
+    println("Enter name and surname:")
+    val surname = readln().lowercase().toMutableList()
+    val surname2 = mutableListOf(mutableListOf<String>())
+    println("Enter person's status:")
+    val status = readln()
+    surname2.removeAt(0)
+
+    val a = mutableListOf("____", "|__|", "|  |")
+    val b = mutableListOf("___ ", "|__]", "|__]")
+    val c = mutableListOf("____", "|   ", "|___")
+    val d = mutableListOf("___ ", "|  \\", "|__/")
+    val e = mutableListOf("____", "|___", "|___")
+    val f = mutableListOf("____", "|___", "|   ")
+    val g = mutableListOf("____", "| __", "|__]")
+    val h = mutableListOf("_  _", "|__|", "|  |")
+    val ii = mutableListOf("_", "|", "|")
+    val j = mutableListOf(" _", " |", "_|")
+    val k = mutableListOf("_  _", "|_/ ", "| \\_")
+    val l = mutableListOf("_   ", "|   ", "|___")
+    val m = mutableListOf("_  _", "|\\/|", "|  |")
+    val n = mutableListOf("_  _", "|\\ |", "| \\|")
+    val o = mutableListOf("____", "|  |", "|__|")
+    val p = mutableListOf("___ ", "|__]", "|   ")
+    val q = mutableListOf("____", "|  |", "|_\\|")
+    val r = mutableListOf("____", "|__/", "|  \\")
+    val s = mutableListOf("____", "[__ ", "___]")
+    val t = mutableListOf("___", " | ", " | ")
+    val u = mutableListOf("_  _", "|  |", "|__|")
+    val v = mutableListOf("_  _", "|  |", " \\/ ")
+    val w = mutableListOf("_ _ _", "| | |", "|_|_|")
+    val x = mutableListOf("_  _", " \\/ ", "_/\\_")
+    val y = mutableListOf("_   _", " \\_/ ", "  |  ")
+    val z = mutableListOf("___ ", "  / ", " /__")
+    val space = mutableListOf("    ", "    ", "    ")
+    val pref = mutableListOf("* ", "* ", "* ")
+    val postfix = mutableListOf(" *", " *", " *")
+
+    for (i in surname.indices) {
+        when {
+            surname[i].toString() == "a" -> {
+                surname2.add(a)
+            }
+            surname[i].lowercase() == "b" -> {
+                surname2.add(b)
+            }
+            surname[i].lowercase() == "c" -> {
+                surname2.add(c)
+            }
+            surname[i].lowercase() == "d" -> {
+                surname2.add(d)
+            }
+            surname[i].lowercase() == "e" -> {
+                surname2.add(e)
+            }
+            surname[i].lowercase() == "f" -> {
+                surname2.add(f)
+            }
+            surname[i].lowercase() == "g" -> {
+                surname2.add(g)
+            }
+            surname[i].lowercase() == "h" -> {
+                surname2.add(h)
+            }
+            surname[i].lowercase() == "i" -> {
+                surname2.add(ii)
+            }
+            surname[i].lowercase() == "j" -> {
+                surname2.add(j)
+            }
+            surname[i].lowercase() == "k" -> {
+                surname2.add(k)
+            }
+            surname[i].lowercase() == "l" -> {
+                surname2.add(l)
+            }
+            surname[i].lowercase() == "m" -> {
+                surname2.add(m)
+            }
+            surname[i].lowercase() == "n" -> {
+                surname2.add(n)
+            }
+            surname[i].lowercase() == "o" -> {
+                surname2.add(o)
+            }
+            surname[i].lowercase() == "p" -> {
+                surname2.add(p)
+            }
+            surname[i].lowercase() == "q" -> {
+                surname2.add(q)
+            }
+            surname[i].lowercase() == "r" -> {
+                surname2.add(r)
+            }
+            surname[i].lowercase() == "s" -> {
+                surname2.add(s)
+            }
+            surname[i].lowercase() == "t" -> {
+                surname2.add(t)
+            }
+            surname[i].lowercase() == "u" -> {
+                surname2.add(u)
+            }
+            surname[i].lowercase() == "v" -> {
+                surname2.add(v)
+            }
+            surname[i].lowercase() == "w" -> {
+                surname2.add(w)
+            }
+            surname[i].lowercase() == "x" -> {
+                surname2.add(x)
+            }
+            surname[i].lowercase() == "y" -> {
+                surname2.add(y)
+            }
+            surname[i].lowercase() == "z" -> {
+                surname2.add(z)
+            }
+            surname[i].lowercase() == " " -> {
+                surname2.add(space)
+            }
+        }
+    }
+    surname2.add(0, pref)
+    surname2.add(postfix)
+
+    val string = mutableListOf<String>()
+    for (i in 0..surname2.lastIndex) {
+        string += surname2[i].joinToString(",")
+    }
+    val str = string.joinToString(" ")
+
+    if (status.length + 2 < (str.length - 2) / 3) {
+        repeat((str.length - 2) / 3) { print("*") }
+        println("")
+
+        for (i in 0..surname.lastIndex + 1) {
+            print("${surname2[i][0]} ")
+        }
+        print(surname2[surname.lastIndex + 2][0])
+        println("")
+        for (i in 0..surname.lastIndex + 1) {
+            print("${surname2[i][1]} ")
+        }
+        print(surname2[surname.lastIndex + 2][1])
+        println("")
+        for (i in 0..surname.lastIndex + 1) {
+            print("${surname2[i][2]} ")
+        }
+        print(surname2[surname.lastIndex + 2][2])
+        println("")
+        print("*")
+        val rep1 = ((str.length - 2) / 3 - status.length) / 2 - 1
+
+        repeat(rep1) { print(" ") }
+        print(status)
+        if (status.length % 2 == 0 && (str.length - 2) / 3 % 2 == 0) {
+            repeat(rep1) { print(" ") }
+        } else if (status.length % 2 != 0 && (str.length - 2) / 3 % 2 == 0) {
+            repeat(rep1 + 1) { print(" ") }
+        } else if (status.length % 2 == 0 && (str.length - 2) / 3 % 2 != 0) {
+            repeat(rep1 + 1) { print(" ") }
+        } else if (status.length % 2 != 0 && (str.length - 2) / 3 % 2 != 0) {
+            repeat(rep1) { print(" ") }
+        }
+        println("*")
+        repeat((str.length - 2) / 3) { print("*") }
+
+    } else {
+        repeat(status.length + 6) { print("*") }
+        println("")
+        val dif = status.length + 6 - (str.length - 2) / 3
+        var pref2 = "* "
+        repeat(dif / 2) {
+            pref2 += " "
+        }
+        var postfix2 = "* "
+        repeat(dif / 2 + dif % 2) {
+            postfix2 += " "
+        }
+        postfix2 = postfix2.reversed()
+        surname2[0] = mutableListOf(pref2, pref2, pref2)
+        surname2[surname2.lastIndex] = mutableListOf(postfix2, postfix2, postfix2)
+
+        for (i in 0..surname.lastIndex + 1) {
+            print("${surname2[i][0]} ")
+        }
+        print(surname2[surname.lastIndex + 2][0])
+        println("")
+        for (i in 0..surname.lastIndex + 1) {
+            print("${surname2[i][1]} ")
+        }
+        print(surname2[surname.lastIndex + 2][1])
+        println("")
+        for (i in 0..surname.lastIndex + 1) {
+            print("${surname2[i][2]} ")
+        }
+        print(surname2[surname.lastIndex + 2][2])
+        println("")
+        print("*")
+        repeat(2) { print(" ") }
+        print(status)
+        repeat(2) { print(" ") }
+        println("*")
+        repeat(status.length + 6) { print("*") }
+    }
+}
