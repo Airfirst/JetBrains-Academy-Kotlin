@@ -1,0 +1,884 @@
+Description
+Let's increase the text size and use another font, which looks very similar to the existing font called "Times New Roman".
+
+The first four lowercase characters of this Roman font are shown below in this new font:
+
+           .o8                       .o8
+          "888                      "888
+ .oooo.    888oooo.   .ooooo.   .oooo888
+`P  )88b   d88' `88b d88' `"Y8 d88' `888
+ .oP"888   888   888 888       888   888
+d8(  888   888   888 888   .o8 888   888
+`Y888""8o  `Y8bod8P' `Y8bod8P' `Y8bod88P"
+You can download this font, along with the smaller and less fancy font from the previous example (the Medium font). The file contains information about the font size and about all lowercase and uppercase letters.
+
+In this stage, you need to create a program that generates a name tag using the new font.
+
+Objectives
+Your program should generate a person's name tag using the Roman font. Also, it should print the personal status using the Medium font.
+
+Both fonts have a special description included in their .txt file. The first line of the file contains two numbers. The first number is the font size, which indicates how many lines are needed to print one character using this font. For example, the Medium font, which you used in the previous stage, needs 3 lines, and the Roman font needs 10. The second number is the number of characters described in the file. The file for each font contains information about 52 characters: 26 uppercase and 26 lowercase letters.
+
+The next lines contain information about each character, one after another. The character information includes the name of the character, the width of the character, and in the next lines, the way the character is represented in ASCII symbols.
+
+Note that these fonts already contain a column of spaces after each font character, so you don't need to add any.
+
+What you need to do :
+
+download the Roman and Medium fonts. The Medium font has been used in the previous stage;
+
+read the personal name and status from standard input like in the previous stage;
+
+output the name tag with the status in a frame; find the necessary characters in the .txt files of the two provided fonts.
+
+to create the borders of the frame, use ‘88’.
+
+The personal status should be centered horizontally. If the status is longer than the full name, then the full name should be centered.
+
+When the status is shorter than the full name, use 2 columns of whitespaces between the first letter of the name and left border and 3 columns between the last letter of the full name and the right border, not including the indents in the font (and vice versa).
+
+There are three blank lines in height between the personal name and the personal status.
+
+Use 6 spaces between the words in the Medium font is 6 symbols in the Medium font (including indents). In the Roman font, your program should insert 10 spaces between the words.
+
+Examples
+Example 1:
+
+Enter name and surname: Ian One
+Enter person's status: VIP
+888888888888888888888888888888888888888888888888888888888888888888888888888888888
+88  ooooo                                   .oooooo.                           88
+88  `888'                                  d8P'  `Y8b                          88
+88   888   .oooo.   ooo. .oo.             888      888 ooo. .oo.    .ooooo.    88
+88   888  `P  )88b  `888P"Y88b            888      888 `888P"Y88b  d88' `88b   88
+88   888   .oP"888   888   888            888      888  888   888  888ooo888   88
+88   888  d8(  888   888   888            `88b    d88'  888   888  888    .o   88
+88  o888o `Y888""8o o888o o888o            `Y8bood8P'  o888o o888o `Y8bod8P'   88
+88                                                                             88
+88                                                                             88
+88                                                                             88
+88                                _  _ _ ___                                   88
+88                                |  | | |__]                                  88
+88                                 \/  | |                                     88
+888888888888888888888888888888888888888888888888888888888888888888888888888888888
+Example 2:
+
+Enter name and surname: A b
+Enter person's status: long participant
+88888888888888888888888888888888888888888888888888888888888888888888888888888888
+88                         .o.                  .o8                           88
+88                        .888.                "888                           88
+88                       .8"888.                888oooo.                      88
+88                      .8' `888.               d88' `88b                     88
+88                     .88ooo8888.              888   888                     88
+88                    .8'     `888.             888   888                     88
+88                   o88o     o8888o            `Y8bod8P'                     88
+88                                                                            88
+88                                                                            88
+88                                                                            88
+88  _    ____ _  _ ____      ___  ____ ____ ___ _ ____ _ ___  ____ _  _ ___   88
+88  |    |  | |\ | | __      |__] |__| |__/  |  | |    | |__] |__| |\ |  |    88
+88  |___ |__| | \| |__]      |    |  | |  \  |  | |___ | |    |  | | \|  |    88
+88888888888888888888888888888888888888888888888888888888888888888888888888888888
+
+
+
+
+
+package signature
+import java.io.File
+
+fun main() {
+    val fileName = "C:\\Users\\Alexey\\Downloads\\roman.txt"
+    val file = File(fileName)
+    val list = file.readLines().toMutableList()
+
+    val fileName2 = "C:\\Users\\Alexey\\Downloads\\medium.txt"
+    val file2 = File(fileName2)
+    val list2 = file2.readLines().toMutableList()
+
+    println("Enter name and surname:")
+    val surname = readln().toMutableList()
+    val surname2 = mutableListOf(mutableListOf<String>())
+    println("Enter person's status:")
+    val status = readln().lowercase().toMutableList()
+    val status2 = mutableListOf(mutableListOf<String>())
+    surname2.removeAt(0)
+    status2.removeAt(0)
+
+    var a = mutableListOf<String>()
+    if ("a 10" in list) {
+        val a10 = list.indexOf("a 10")
+        a = list.subList(a10 + 1, a10 + 11)
+    }
+    var b = mutableListOf<String>()
+    if ("b 11" in list) {
+        val b11 = list.indexOf("b 11")
+        b = list.subList(b11 + 1, b11 + 11)
+    }
+    var c = mutableListOf<String>()
+    if ("c 10" in list) {
+        val c10 = list.indexOf("c 10")
+        c = list.subList(c10 + 1, c10 + 11)
+    }
+    var d = mutableListOf<String>()
+    if ("d 11" in list) {
+        val d11 = list.indexOf("d 11")
+        d = list.subList(d11 + 1, d11 + 11)
+    }
+    var e = mutableListOf<String>()
+    if ("e 10" in list) {
+        val e10 = list.indexOf("e 10")
+        e = list.subList(e10 + 1, e10 + 11)
+    }
+    var f = mutableListOf<String>()
+    if ("f 8" in list) {
+        val f8 = list.indexOf("f 8")
+        f = list.subList(f8 + 1, f8 + 11)
+    }
+    var g = mutableListOf<String>()
+    if ("g 11" in list) {
+        val g11 = list.indexOf("g 11")
+        g = list.subList(g11 + 1, g11 + 11)
+    }
+    var h = mutableListOf<String>()
+    if ("h 12" in list) {
+        val h12 = list.indexOf("h 12")
+        h = list.subList(h12 + 1, h12 + 11)
+    }
+    var ii = mutableListOf<String>()
+    if ("i 6" in list) {
+        val i6 = list.indexOf("i 6")
+        ii = list.subList(i6 + 1, i6 + 11)
+    }
+    var j = mutableListOf<String>()
+    if ("j 8" in list) {
+        val j8 = list.indexOf("j 8")
+        j = list.subList(j8 + 1, j8 + 11)
+    }
+    var k = mutableListOf<String>()
+    if ("k 12" in list) {
+        val k12 = list.indexOf("k 12")
+        k = list.subList(k12 + 1, k12 + 11)
+    }
+    var l = mutableListOf<String>()
+    if ("l 6" in list) {
+        val l6 = list.indexOf("l 6")
+        l = list.subList(l6 + 1, l6 + 11)
+    }
+    var m = mutableListOf<String>()
+    if ("m 18" in list) {
+        val m18 = list.indexOf("m 18")
+        m = list.subList(m18 + 1, m18 + 11)
+    }
+    var n = mutableListOf<String>()
+    if ("n 12" in list) {
+        val n12 = list.indexOf("n 12")
+        n = list.subList(n12 + 1, n12 + 11)
+    }
+    var o = mutableListOf<String>()
+    if ("o 10" in list) {
+        val o10 = list.indexOf("o 10")
+        o = list.subList(o10 + 1, o10 + 11)
+    }
+    var p = mutableListOf<String>()
+    if ("p 11" in list) {
+        val p11 = list.indexOf("p 11")
+        p = list.subList(p11 + 1, p11 + 11)
+    }
+    var q = mutableListOf<String>()
+    if ("q 11" in list) {
+        val q11 = list.indexOf("q 11")
+        q = list.subList(q11 + 1, q11 + 11)
+    }
+    var r = mutableListOf<String>()
+    if ("r 9" in list) {
+        val r9 = list.indexOf("r 9")
+        r = list.subList(r9 + 1, r9 + 11)
+    }
+    var s = mutableListOf<String>()
+    if ("s 9" in list) {
+        val s9 = list.indexOf("s 9")
+        s = list.subList(s9 + 1, s9 + 11)
+    }
+    var t = mutableListOf<String>()
+    if ("t 8" in list) {
+        val t8 = list.indexOf("t 8")
+        t = list.subList(t8 + 1, t8 + 11)
+    }
+    var u = mutableListOf<String>()
+    if ("u 12" in list) {
+        val u12 = list.indexOf("u 12")
+        u = list.subList(u12 + 1, u12 + 11)
+    }
+    var v = mutableListOf<String>()
+    if ("v 12" in list) {
+        val v12 = list.indexOf("v 12")
+        v = list.subList(v12 + 1, v12 + 11)
+    }
+    var w = mutableListOf<String>()
+    if ("w 17" in list) {
+        val w17 = list.indexOf("w 17")
+        w = list.subList(w17 + 1, w17 + 11)
+    }
+    var x = mutableListOf<String>()
+    if ("x 12" in list) {
+        val x12 = list.indexOf("x 12")
+        x = list.subList(x12 + 1, x12 + 11)
+    }
+    var y = mutableListOf<String>()
+    if ("y 12" in list) {
+        val y12 = list.indexOf("y 12")
+        y = list.subList(y12 + 1, y12 + 11)
+    }
+    var z = mutableListOf<String>()
+    if ("z 11" in list) {
+        val z11 = list.indexOf("z 11")
+        z = list.subList(z11 + 1, z11 + 11)
+    }
+    var A = mutableListOf<String>()
+    if ("A 16" in list) {
+        val A16 = list.indexOf("A 16")
+        A = list.subList(A16 + 1, A16 + 11)
+    }
+    var B = mutableListOf<String>()
+    if ("B 13" in list) {
+        val B13 = list.indexOf("B 13")
+        B = list.subList(B13 + 1, B13 + 11)
+    }
+    var C = mutableListOf<String>()
+    if ("C 13" in list) {
+        val C13 = list.indexOf("C 13")
+        C = list.subList(C13 + 1, C13 + 11)
+    }
+    var D = mutableListOf<String>()
+    if ("D 14" in list) {
+        val D14 = list.indexOf("D 14")
+        D = list.subList(D14 + 1, D14 + 11)
+    }
+    var E = mutableListOf<String>()
+    if ("E 13" in list) {
+        val E13 = list.indexOf("E 13")
+        E = list.subList(E13 + 1, E13 + 11)
+    }
+    var F = mutableListOf<String>()
+    if ("F 13" in list) {
+        val F13 = list.indexOf("F 13")
+        F = list.subList(F13 + 1, F13 + 11)
+    }
+    var G = mutableListOf<String>()
+    if ("G 14" in list) {
+        val G14 = list.indexOf("G 14")
+        G = list.subList(G14 + 1, G14 + 11)
+    }
+    var H = mutableListOf<String>()
+    if ("H 14" in list) {
+        val H14 = list.indexOf("H 14")
+        H = list.subList(H14 + 1, H14 + 11)
+    }
+    var I = mutableListOf<String>()
+    if ("I 6" in list) {
+        val I6 = list.indexOf("I 6")
+        I = list.subList(I6 + 1, I6 + 11)
+    }
+    var J = mutableListOf<String>()
+    if ("J 8" in list) {
+        val J8 = list.indexOf("J 8")
+        J = list.subList(J8 + 1, J8 + 11)
+    }
+    var K = mutableListOf<String>()
+    if ("K 13" in list) {
+        val K13 = list.indexOf("K 13")
+        K = list.subList(K13 + 1, K13 + 11)
+    }
+    var L = mutableListOf<String>()
+    if ("L 13" in list) {
+        val L13 = list.indexOf("L 13")
+        L = list.subList(L13 + 1, L13 + 11)
+    }
+    var M = mutableListOf<String>()
+    if ("M 17" in list) {
+        val M17 = list.indexOf("M 17")
+        M = list.subList(M17 + 1, M17 + 11)
+    }
+    var N = mutableListOf<String>()
+    if ("N 15" in list) {
+        val N15 = list.indexOf("N 15")
+        N = list.subList(N15 + 1, N15 + 11)
+    }
+    var O = mutableListOf<String>()
+    if ("O 13" in list) {
+        val O13 = list.indexOf("O 13")
+        O = list.subList(O13 + 1, O13 + 11)
+    }
+    var P = mutableListOf<String>()
+    if ("P 13" in list) {
+        val P13 = list.indexOf("P 13")
+        P = list.subList(P13 + 1, P13 + 11)
+    }
+    var Q = mutableListOf<String>()
+    if ("Q 16" in list) {
+        val Q16 = list.indexOf("Q 16")
+        Q = list.subList(Q16 + 1, Q16 + 11)
+    }
+    var R = mutableListOf<String>()
+    if ("R 13" in list) {
+        val R13 = list.indexOf("R 13")
+        R = list.subList(R13 + 1, R13 + 11)
+    }
+    var S = mutableListOf<String>()
+    if ("S 12" in list) {
+        val S12 = list.indexOf("S 12")
+        S = list.subList(S12 + 1, S12 + 11)
+    }
+    var T = mutableListOf<String>()
+    if ("T 14" in list) {
+        val T14 = list.indexOf("T 14")
+        T = list.subList(T14 + 1, T14 + 11)
+    }
+    var U = mutableListOf<String>()
+    if ("U 14" in list) {
+        val U14 = list.indexOf("U 14")
+        U = list.subList(U14 + 1, U14 + 11)
+    }
+    var V = mutableListOf<String>()
+    if ("V 16" in list) {
+        val V16 = list.indexOf("V 16")
+        V = list.subList(V16 + 1, V16 + 11)
+    }
+    var W = mutableListOf<String>()
+    if ("W 25" in list) {
+        val W25 = list.indexOf("W 25")
+        W = list.subList(W25 + 1, W25 + 11)
+    }
+    var X = mutableListOf<String>()
+    if ("X 15" in list) {
+        val X15 = list.indexOf("X 15")
+        X = list.subList(X15 + 1, X15 + 11)
+    }
+    var Y = mutableListOf<String>()
+    if ("Y 14" in list) {
+        val Y14 = list.indexOf("Y 14")
+        Y = list.subList(Y14 + 1, Y14 + 11)
+    }
+    var Z = mutableListOf<String>()
+    if ("Z 14" in list) {
+        val Z14 = list.indexOf("Z 14")
+        Z = list.subList(Z14 + 1, Z14 + 11)
+    }
+
+    val space = mutableListOf("          ", "          ", "          ","          ","          ","          ","          ","          ","          ","          ")
+    val pref = mutableListOf("88  ", "88  ", "88  ", "88  ", "88  ", "88  ", "88  ", "88  ", "88  ", "88  ")
+    val postfix = mutableListOf("  88", "  88", "  88", "  88", "  88", "  88", "  88", "  88", "  88", "  88")
+
+    for (i in surname.indices) {
+        when {
+            surname[i] == 'a' -> {
+                surname2.add(a)
+            }
+            surname[i] == 'b' -> {
+                surname2.add(b)
+            }
+            surname[i] == 'c' -> {
+                surname2.add(c)
+            }
+            surname[i] == 'd' -> {
+                surname2.add(d)
+            }
+            surname[i] == 'e' -> {
+                surname2.add(e)
+            }
+            surname[i] == 'f' -> {
+                surname2.add(f)
+            }
+            surname[i] == 'g' -> {
+                surname2.add(g)
+            }
+            surname[i] == 'h' -> {
+                surname2.add(h)
+            }
+            surname[i] == 'i' -> {
+                surname2.add(ii)
+            }
+            surname[i] == 'j' -> {
+                surname2.add(j)
+            }
+            surname[i] == 'k' -> {
+                surname2.add(k)
+            }
+            surname[i] == 'l' -> {
+                surname2.add(l)
+            }
+            surname[i] == 'm' -> {
+                surname2.add(m)
+            }
+            surname[i] == 'n' -> {
+                surname2.add(n)
+            }
+            surname[i] == 'o' -> {
+                surname2.add(o)
+            }
+            surname[i] == 'p' -> {
+                surname2.add(p)
+            }
+            surname[i] == 'q' -> {
+                surname2.add(q)
+            }
+            surname[i] == 'r' -> {
+                surname2.add(r)
+            }
+            surname[i] == 's' -> {
+                surname2.add(s)
+            }
+            surname[i] == 't' -> {
+                surname2.add(t)
+            }
+            surname[i] == 'u' -> {
+                surname2.add(u)
+            }
+            surname[i] == 'v' -> {
+                surname2.add(v)
+            }
+            surname[i] == 'w' -> {
+                surname2.add(w)
+            }
+            surname[i] == 'x' -> {
+                surname2.add(x)
+            }
+            surname[i] == 'y' -> {
+                surname2.add(y)
+            }
+            surname[i] == 'z' -> {
+                surname2.add(z)
+            }
+            surname[i] == ' ' -> {
+                surname2.add(space)
+            }
+            surname[i] == 'A' -> {
+                surname2.add(A)
+            }
+            surname[i] == 'B' -> {
+                surname2.add(B)
+            }
+            surname[i] == 'C' -> {
+                surname2.add(C)
+            }
+            surname[i] == 'D' -> {
+                surname2.add(D)
+            }
+            surname[i] == 'E' -> {
+                surname2.add(E)
+            }
+            surname[i] == 'F' -> {
+                surname2.add(F)
+            }
+            surname[i] == 'G' -> {
+                surname2.add(G)
+            }
+            surname[i] == 'H' -> {
+                surname2.add(H)
+            }
+            surname[i] == 'I' -> {
+                surname2.add(I)
+            }
+            surname[i] == 'J' -> {
+                surname2.add(J)
+            }
+            surname[i] == 'K' -> {
+                surname2.add(K)
+            }
+            surname[i] == 'L' -> {
+                surname2.add(L)
+            }
+            surname[i] == 'M' -> {
+                surname2.add(M)
+            }
+            surname[i] == 'N' -> {
+                surname2.add(N)
+            }
+            surname[i] == 'O' -> {
+                surname2.add(O)
+            }
+            surname[i] == 'P' -> {
+                surname2.add(P)
+            }
+            surname[i] == 'Q' -> {
+                surname2.add(Q)
+            }
+            surname[i] == 'R' -> {
+                surname2.add(R)
+            }
+            surname[i] == 'S' -> {
+                surname2.add(S)
+            }
+            surname[i] == 'T' -> {
+                surname2.add(T)
+            }
+            surname[i] == 'U' -> {
+                surname2.add(U)
+            }
+            surname[i] == 'V' -> {
+                surname2.add(V)
+            }
+            surname[i] == 'W' -> {
+                surname2.add(W)
+            }
+            surname[i] == 'X' -> {
+                surname2.add(X)
+            }
+            surname[i] == 'Y' -> {
+                surname2.add(Y)
+            }
+            surname[i] == 'Z' -> {
+                surname2.add(Z)
+            }
+        }
+    }
+    surname2.add(0, pref)
+    surname2.add(postfix)
+
+/////////////////////////////////////////////////////
+
+    var a2 = mutableListOf<String>()
+    if ("a 5" in list2) {
+        val a5 = list2.indexOf("a 5")
+        a2 = list2.subList(a5 + 1, a5 + 4)
+    }
+    var b2 = mutableListOf<String>()
+    if ("b 5" in list2) {
+        val b5 = list2.indexOf("b 5")
+        b2 = list2.subList(b5 + 1, b5 + 4)
+    }
+    var c2 = mutableListOf<String>()
+    if ("c 5" in list2) {
+        val c5 = list2.indexOf("c 5")
+        c2 = list2.subList(c5 + 1, c5 + 4)
+    }
+    var d2 = mutableListOf<String>()
+    if ("d 5" in list2) {
+        val d5 = list2.indexOf("d 5")
+        d2 = list2.subList(d5 + 1, d5 + 4)
+    }
+    var e2 = mutableListOf<String>()
+    if ("e 5" in list2) {
+        val e5 = list2.indexOf("e 5")
+        e2 = list2.subList(e5 + 1, e5 + 4)
+    }
+    var f2 = mutableListOf<String>()
+    if ("f 5" in list2) {
+        val f5 = list2.indexOf("f 5")
+        f2 = list2.subList(f5 + 1, f5 + 4)
+    }
+    var g2 = mutableListOf<String>()
+    if ("g 5" in list2) {
+        val g5 = list2.indexOf("g 5")
+        g2 = list2.subList(g5 + 1, g5 + 4)
+    }
+    var h2 = mutableListOf<String>()
+    if ("h 5" in list2) {
+        val h5 = list2.indexOf("h 5")
+        h2 = list2.subList(h5 + 1, h5 + 4)
+    }
+    var ii2 = mutableListOf<String>()
+    if ("i 2" in list2) {
+        val i2 = list2.indexOf("i 2")
+        ii2 = list2.subList(i2 + 1, i2 + 4)
+    }
+    var j2 = mutableListOf<String>()
+    if ("j 3" in list2) {
+        val j3 = list2.indexOf("j 3")
+        j2 = list2.subList(j3 + 1, j3 + 4)
+    }
+    var k2 = mutableListOf<String>()
+    if ("k 5" in list2) {
+        val k5 = list2.indexOf("k 5")
+        k2 = list2.subList(k5 + 1, k5 + 4)
+    }
+    var l2 = mutableListOf<String>()
+    if ("l 5" in list2) {
+        val l5 = list2.indexOf("l 5")
+        l2 = list2.subList(l5 + 1, l5 + 4)
+    }
+    var m2 = mutableListOf<String>()
+    if ("m 5" in list2) {
+        val m5 = list2.indexOf("m 5")
+        m2 = list2.subList(m5 + 1, m5 + 4)
+    }
+    var n2 = mutableListOf<String>()
+    if ("n 5" in list2) {
+        val n5 = list2.indexOf("n 5")
+        n2 = list2.subList(n5 + 1, n5 + 4)
+    }
+    var o2 = mutableListOf<String>()
+    if ("o 5" in list2) {
+        val o5 = list2.indexOf("o 5")
+        o2 = list2.subList(o5 + 1, o5 + 4)
+    }
+    var p2 = mutableListOf<String>()
+    if ("p 5" in list2) {
+        val p5 = list2.indexOf("p 5")
+        p2 = list2.subList(p5 + 1, p5 + 4)
+    }
+    var q2 = mutableListOf<String>()
+    if ("q 5" in list2) {
+        val q5 = list2.indexOf("q 5")
+        q2 = list2.subList(q5 + 1, q5 + 4)
+    }
+    var r2 = mutableListOf<String>()
+    if ("r 5" in list2) {
+        val r5 = list2.indexOf("r 5")
+        r2 = list2.subList(r5 + 1, r5 + 4)
+    }
+    var s2 = mutableListOf<String>()
+    if ("s 5" in list2) {
+        val s5 = list2.indexOf("s 5")
+        s2 = list2.subList(s5 + 1, s5 + 4)
+    }
+    var t2 = mutableListOf<String>()
+    if ("t 4" in list2) {
+        val t4 = list2.indexOf("t 4")
+        t2 = list2.subList(t4 + 1, t4 + 4)
+    }
+    var u2 = mutableListOf<String>()
+    if ("u 5" in list2) {
+        val u5 = list2.indexOf("u 5")
+        u2 = list2.subList(u5 + 1, u5 + 4)
+    }
+    var v2 = mutableListOf<String>()
+    if ("v 5" in list2) {
+        val v5 = list2.indexOf("v 5")
+        v2 = list2.subList(v5 + 1, v5 + 4)
+    }
+    var w2 = mutableListOf<String>()
+    if ("w 6" in list2) {
+        val w6 = list2.indexOf("w 6")
+        w2 = list2.subList(w6 + 1, w6 + 4)
+    }
+    var x2 = mutableListOf<String>()
+    if ("x 5" in list2) {
+        val x5 = list2.indexOf("x 5")
+        x2 = list2.subList(x5 + 1, x5 + 4)
+    }
+    var y2 = mutableListOf<String>()
+    if ("y 6" in list2) {
+        val y6 = list2.indexOf("y 6")
+        y2 = list2.subList(y6 + 1, y6 + 4)
+    }
+    var z2 = mutableListOf<String>()
+    if ("z 5" in list2) {
+        val z5 = list2.indexOf("z 5")
+        z2 = list2.subList(z5 + 1, z5 + 4)
+    }
+
+    val space2 = mutableListOf("     ", "     ", "     ")
+    val pref2 = mutableListOf("88  ", "88  ", "88  ")
+    val postfix2 = mutableListOf("  88", "  88", "  88")
+
+    for (i in status.indices) {
+        when {
+            status[i].toString() == "a" -> {
+                status2.add(a2)
+            }
+            status[i].lowercase() == "b" -> {
+                status2.add(b2)
+            }
+            status[i].lowercase() == "c" -> {
+                status2.add(c2)
+            }
+            status[i].lowercase() == "d" -> {
+                status2.add(d2)
+            }
+            status[i].lowercase() == "e" -> {
+                status2.add(e2)
+            }
+            status[i].lowercase() == "f" -> {
+                status2.add(f2)
+            }
+            status[i].lowercase() == "g" -> {
+                status2.add(g2)
+            }
+            status[i].lowercase() == "h" -> {
+                status2.add(h2)
+            }
+            status[i].lowercase() == "i" -> {
+                status2.add(ii2)
+            }
+            status[i].lowercase() == "j" -> {
+                status2.add(j2)
+            }
+            status[i].lowercase() == "k" -> {
+                status2.add(k2)
+            }
+            status[i].lowercase() == "l" -> {
+                status2.add(l2)
+            }
+            status[i].lowercase() == "m" -> {
+                status2.add(m2)
+            }
+            status[i].lowercase() == "n" -> {
+                status2.add(n2)
+            }
+            status[i].lowercase() == "o" -> {
+                status2.add(o2)
+            }
+            status[i].lowercase() == "p" -> {
+                status2.add(p2)
+            }
+            status[i].lowercase() == "q" -> {
+                status2.add(q2)
+            }
+            status[i].lowercase() == "r" -> {
+                status2.add(r2)
+            }
+            status[i].lowercase() == "s" -> {
+                status2.add(s2)
+            }
+            status[i].lowercase() == "t" -> {
+                status2.add(t2)
+            }
+            status[i].lowercase() == "u" -> {
+                status2.add(u2)
+            }
+            status[i].lowercase() == "v" -> {
+                status2.add(v2)
+            }
+            status[i].lowercase() == "w" -> {
+                status2.add(w2)
+            }
+            status[i].lowercase() == "x" -> {
+                status2.add(x2)
+            }
+            status[i].lowercase() == "y" -> {
+                status2.add(y2)
+            }
+            status[i].lowercase() == "z" -> {
+                status2.add(z2)
+            }
+            status[i].lowercase() == " " -> {
+                status2.add(space2)
+            }
+        }
+    }
+    status2.add(0, pref2)
+    status2.add(postfix2)
+
+//---------------------------------
+    val string2 = mutableListOf<String>()
+    for (i in 0..status2.lastIndex) {
+        string2 += status2[i].joinToString(",")
+    }
+    val str2 = string2.joinToString(" ")
+//-----------------------------------
+    var count = 0
+    for (i in 0..surname.lastIndex + 2) {
+        count += surname2[i][0].length
+    }
+//-----------------------------------
+    var count2 = 0
+    for (i in 0..status.lastIndex + 2) {
+        count2 += status2[i][0].length
+    }
+
+////////////////////////////////////////////////////////////
+
+    if (count2 < count) {
+        if (count % 2 == 0) {
+            repeat(count / 2) { print("88") }
+            println("")
+        } else {
+            repeat(count / 2) { print("88") }
+            print("8")
+            println("")
+        }
+//-----------------------------------
+        for (jj in 0..9) {
+            for (i in 0..surname.lastIndex + 1) {
+                print(surname2[i][jj])
+            }
+            print(surname2[surname.lastIndex + 2][jj])
+            println("")
+        }
+//----------------------------------------------------------------
+        val dif = count - count2
+        var pref3 = "88  "
+        repeat(dif / 2) {
+            pref3 += " "
+        }
+        var postfix3 = "88  "
+        repeat(dif / 2 + dif % 2) {
+            postfix3 += " "
+        }
+        postfix3 = postfix3.reversed()
+        status2[0] = mutableListOf(pref3, pref3, pref3)
+        status2[status2.lastIndex] = mutableListOf(postfix3, postfix3, postfix3)
+
+        for (jj in 0..2) {
+            for (i in 0..status.lastIndex + 1) {
+                print(status2[i][jj])
+            }
+            print(status2[status.lastIndex + 2][jj])
+            println("")
+        }
+//-----------------------------------------------------------------
+
+            if (count % 2 == 0) {
+                repeat(count / 2) { print("88") }
+                println("")
+            } else {
+                repeat(count / 2) { print("88") }
+                print("8")
+                println("")
+            }
+
+    } else {
+//-----------------------------------
+        if (count2 % 2 == 0) {
+            repeat(count2 / 2) { print("88") }
+            println("")
+        } else {
+            repeat(count2 / 2) { print("88") }
+            print("8")
+            println("")
+        }
+
+        val dif = count2 - count
+        var pref4 = "88 "
+        repeat(dif / 2 + 1) {
+            pref4 += " "
+        }
+        var postfix4 = "88 "
+        repeat(dif / 2 + dif % 2 + 1) {
+            postfix4 += " "
+        }
+        postfix4 = postfix4.reversed()
+        surname2[0] = mutableListOf(pref4, pref4, pref4, pref4, pref4, pref4, pref4, pref4, pref4, pref4)
+        surname2[surname2.lastIndex] = mutableListOf(postfix4, postfix4, postfix4, postfix4, postfix4, postfix4, postfix4, postfix4, postfix4, postfix4)
+
+
+        for (jj in 0..9) {
+            for (i in 0..surname.lastIndex + 1) {
+                print(surname2[i][jj])
+            }
+            print(surname2[surname.lastIndex + 2][jj])
+            println("")
+        }
+//----------------------------------------------------------------
+
+        for (jj in 0..2) {
+            for (i in 0..status.lastIndex + 1) {
+                print(status2[i][jj])
+            }
+            print(status2[status.lastIndex + 2][jj])
+            println("")
+        }
+
+        if (count2 % 2 == 0) {
+            repeat(count2 / 2) { print("88") }
+            println("")
+        } else {
+            repeat(count2 / 2) { print("88") }
+            print("8")
+            println("")
+        }
+    }
+}
