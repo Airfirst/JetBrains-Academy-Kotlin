@@ -1,0 +1,464 @@
+2/4
+
+package cryptography
+
+import java.io.File
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+import java.awt.Color
+import javax.imageio.IIOException
+
+fun im (b: String, c: String): String {
+    val fileInput = File(b)
+    val image: BufferedImage = ImageIO.read(fileInput)
+    for (x in 0 until image.width) {
+        for (y in 0 until image.height) {
+            val colorRead = Color(image.getRGB(x, y))
+            var r = colorRead.red
+            r = if (r % 2 != 0) colorRead.red else colorRead.red + 1
+            var g = colorRead.green
+            g = if (g % 2 != 0) colorRead.green else colorRead.green + 1
+            var bb = colorRead.blue
+            bb = if (bb % 2 != 0) colorRead.blue else colorRead.blue + 1
+
+            val color = Color(r, g, bb)
+            image.setRGB(x, y, color.rgb)
+        }
+    }
+    val output = File(c)
+    ImageIO.write(image, "png", output)
+    println("Input Image: $b")
+    println("Output Image: $c")
+    println("Image $c is saved.")
+    return c
+}
+
+fun main() {
+    while (true) {
+        println("Task (hide, show, exit):")
+        val a = readln()
+        when (a) {
+            "hide" -> {
+                println("Input image file:")
+                val b = readln()
+                println("Output image file:")
+                val c = readln()
+                try {
+                    im(b, c)
+                }
+                catch (e: IIOException) {
+                    println("Can't read input file!")
+                }
+            }
+            "show" -> println("Obtaining message from image.")
+            "exit" -> { println("Bye!"); break }
+            else -> println("Wrong task: $a")
+        }
+    }
+}
+
+
+
+3/4
+
+
+
+
+package cryptography
+
+import java.io.File
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+import java.awt.Color
+import javax.imageio.IIOException
+
+fun msgInBits(message: String): List<Int> {
+    val list = mutableListOf<String>()
+    message.toByteArray(Charsets.UTF_8).forEach {
+        list += it.toString(2).padStart(8, '0')
+    }
+    return list.joinToString("").map { it.digitToInt() }
+}
+
+fun newImageWithMessage(image: BufferedImage, msgInBits: List<Int>): BufferedImage {
+    var ins = 0
+    for (y in 0 until image.height) {
+        for (x in 0 until image.width) {
+            if (ins < msgInBits.size) {
+                val colorRead = Color(image.getRGB(x, y))
+                val r = colorRead.red
+                val g = colorRead.green
+                val bb = colorRead.blue.and(254).or(msgInBits[ins]) % 256
+                val color = Color(r, g, bb)
+                image.setRGB(x, y, color.rgb)
+                ins++
+            } else {
+                return image
+            }
+        }
+    }
+    return image
+}
+
+fun hide (b: String, c: String, msgInBits: List<Int>): String {
+    val fileInput = File(b)
+    var image: BufferedImage = ImageIO.read(fileInput)
+    if (msgInBits.size > image.width * image.height) {
+        println("The input image is not large enough to hold this message.")
+    }
+
+    image = newImageWithMessage(image, msgInBits)
+    val output = File(c)
+    ImageIO.write(image, "png", output)
+    println("Message saved in $c image.")
+    return c
+}
+
+fun go() {
+    while (true) {
+        println("Task (hide, show, exit):")
+        when (val a = readln()) {
+            "hide" -> {
+                println("Input image file:")
+                val b = readln()
+                println("Output image file:")
+                val c = readln()
+                println("Message to hide:")
+                val message = readln()+ "\u0000" + "\u0000" + "\u0003"
+                try {
+                    hide(b, c, msgInBits(message))
+                }
+                catch (e: IIOException) {
+                    println("Can't read input file!")
+                }
+            }
+            "show" -> {
+                println("Input image file:")
+                val imageInput = readln()
+                val fileInput = File(imageInput)
+                val image = ImageIO.read(fileInput)
+                println("Message:")
+                val outputMessage = mutableListOf<Int>()
+                for (y in 0 until image.height) {
+                    for (x in 0 until image.width) {
+                        val color = Color(image.getRGB(x, y))
+                        outputMessage += (color.blue).toString(2).takeLast(1).toInt()
+                    }
+                }
+                outputMessage.joinToString("").split("000000000000000000000011").first().chunked(8).forEach { print(it.toInt(2).toChar()) }
+                println()
+            }
+            "exit" -> { println("Bye!"); break }
+            else -> println("Wrong task: $a")
+        }
+    }
+}
+fun main() {
+    go()
+}
+
+
+
+
+4/4
+
+
+
+
+
+package cryptography
+
+import java.io.File
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+import java.awt.Color
+import javax.imageio.IIOException
+
+fun msgInBits(message: String, pass: String): List<Int> {                     //fun
+    val list = mutableListOf<String>()
+    message.toByteArray(Charsets.UTF_8).forEach {
+        list += it.toString(2).padStart(8, '0')
+    }
+    val list2 = mutableListOf<String>()
+    pass.toByteArray(Charsets.UTF_8).forEach {
+        list2 += it.toString(2).padStart(8, '0')
+    }
+
+    val num2 = list2.size
+    while (list2.size < list.size) {
+        for (i in 0 until num2) {
+            list2 += list2[i]
+        }
+    }
+
+    for (i in list.indices) {
+        var resultTo = 0
+        var num = 1
+        var sum: Int
+        var m = list[i].toInt()
+        while (m > 0) {
+            val mod = m % 10
+            m /= 10
+            sum = mod * num
+            resultTo += sum
+            num *= 2
+        }
+        list[i] = resultTo.toString()
+    }
+    for (i in list2.indices) {
+        var resultTo = 0
+        var num = 1
+        var sum: Int
+        var m = list2[i].toInt()
+        while (m > 0) {
+            val mod = m % 10
+            m /= 10
+            sum = mod * num
+            resultTo += sum
+            num *= 2
+        }
+        list2[i] = resultTo.toString()
+    }
+
+    for (i in list.indices) {
+        list[i] = (list[i].toInt() xor list2[i].toInt()).toString(2)
+    }
+
+    val list3 = mutableListOf("00000000", "00000000", "00000011")
+    list += list3
+
+    for (i in list.indices) {
+        if (list[i].length < 8) {
+            for (j in 0 until 8 - list[i].length) {
+                list[i] = "0" + list[i]
+            }
+        }
+    }
+    return list.joinToString("").map { it.digitToInt() }
+}
+
+fun newImageWithMessage(image: BufferedImage, msgInBits: List<Int>): BufferedImage {                 //fun
+    var ins = 0
+    for (y in 0 until image.height) {
+        for (x in 0 until image.width) {
+            if (ins < msgInBits.size) {
+                val colorRead = Color(image.getRGB(x, y))
+                val r = colorRead.red
+                val g = colorRead.green
+                val bb = colorRead.blue.and(254).or(msgInBits[ins]) % 256
+                val color = Color(r, g, bb)
+                image.setRGB(x, y, color.rgb)
+                ins++
+            } else {
+                return image
+            }
+        }
+    }
+    return image
+}
+
+fun hide (b: String, c: String, msgInBits: List<Int>): String {                        //fun
+    val fileInput = File(b)
+    var image: BufferedImage = ImageIO.read(fileInput)
+    if (msgInBits.size > image.width * image.height) {
+        println("The input image is not large enough to hold this message.")
+    }
+
+    image = newImageWithMessage(image, msgInBits)
+    val output = File(c)
+    ImageIO.write(image, "png", output)
+    println("Message saved in $c image.")
+    return c
+}
+
+fun msgOut (listMessage: List<String>, pass2: String): Unit {                        //fun
+    val list = listMessage.toMutableList()
+    val list2 = mutableListOf<String>()
+    pass2.toByteArray(Charsets.UTF_8).forEach {
+        list2 += it.toString(2).padStart(8, '0')
+    }
+
+    for (i in list.indices) {
+        var resultTo = 0
+        var num = 1
+        var sum: Int
+        var m = list[i].toInt()
+        while (m > 0) {
+            val mod = m % 10
+            m /= 10
+            sum = mod * num
+            resultTo += sum
+            num *= 2
+        }
+        list[i] = resultTo.toString()
+    }
+    for (i in list2.indices) {
+        var resultTo = 0
+        var num = 1
+        var sum: Int
+        var m = list2[i].toInt()
+        while (m > 0) {
+            val mod = m % 10
+            m /= 10
+            sum = mod * num
+            resultTo += sum
+            num *= 2
+        }
+        list2[i] = resultTo.toString()
+    }
+
+    val num2 = list2.size
+    while (list2.size < list.size) {
+        for (i in 0 until num2) {
+            list2 += list2[i]
+        }
+    }
+    for (i in list.indices) {
+        list[i] = (list[i].toInt() xor list2[i].toInt()).toString()
+    }
+    return list.forEach { print(it.toInt().toChar()) }
+}
+fun main() {
+    while (true) {
+        println("Task (hide, show, exit):")
+        when (val a = readln()) {
+            "hide" -> {
+                println("Input image file:")
+                val b = readln()
+                println("Output image file:")
+                val c = readln()
+                println("Message to hide:")
+                val message = readln()
+                println("Password:")
+                val pass = readln()
+                try {
+                    hide(b, c, msgInBits(message, pass))
+                }
+                catch (e: IIOException) {
+                    println("Can't read input file!")
+                }
+            }
+            "show" -> {
+                println("Input image file:")
+                val imageInput = readln()
+                val fileInput = File(imageInput)
+                val image = ImageIO.read(fileInput)
+                println("Password:")
+                val pass2 = readln()
+
+                println("Message:")
+                val outputMessage = mutableListOf<Int>()
+                for (y in 0 until image.height) {
+                    for (x in 0 until image.width) {
+                        val color = Color(image.getRGB(x, y))
+                        outputMessage += (color.blue).toString(2).takeLast(1).toInt()
+                    }
+                }
+                val listMessage = outputMessage.joinToString("").split("000000000000000000000011").first().chunked(8)
+                msgOut(listMessage, pass2)
+                println()
+            }
+            "exit" -> { println("Bye!"); break }
+            else -> println("Wrong task: $a")
+        }
+    }
+}
+
+
+
+
+/*
+import java.io.File
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
+import java.awt.Color
+import javax.imageio.IIOException
+
+fun msgInBits(message: String): List<Int> {
+    val list = mutableListOf<String>()
+    message.toByteArray(Charsets.UTF_8).forEach {
+        list += it.toString(2).padStart(8, '0')
+    }
+    println(list.joinToString("").map { it.digitToInt() })
+    return list.joinToString("").map { it.digitToInt() }
+}
+
+fun newImageWithMessage(image: BufferedImage, msgInBits: List<Int>): BufferedImage {
+    var ins = 0
+    for (y in 0 until image.height) {
+        for (x in 0 until image.width) {
+            if (ins < msgInBits.size) {
+                val colorRead = Color(image.getRGB(x, y))
+                val r = colorRead.red
+                val g = colorRead.green
+                val bb = colorRead.blue.and(254).or(msgInBits[ins]) % 256
+                val color = Color(r, g, bb)
+                image.setRGB(x, y, color.rgb)
+                ins++
+            } else {
+                return image
+            }
+        }
+    }
+    return image
+}
+
+fun hide (b: String, c: String, msgInBits: List<Int>): String {
+    val fileInput = File(b)
+    var image: BufferedImage = ImageIO.read(fileInput)
+    if (msgInBits.size > image.width * image.height) {
+        println("The input image is not large enough to hold this message.")
+    }
+
+    image = newImageWithMessage(image, msgInBits)
+    val output = File(c)
+    ImageIO.write(image, "png", output)
+    println("Message saved in $c image.")
+    return c
+}
+
+fun go() {
+    while (true) {
+        println("Task (hide, show, exit):")
+        when (val a = readln()) {
+            "hide" -> {
+                println("Input image file:")
+                val b = readln()
+                println("Output image file:")
+                val c = readln()
+                println("Message to hide:")
+                val message = readln()+ "\u0000" + "\u0000" + "\u0003"
+                try {
+                    hide(b, c, msgInBits(message))
+                }
+                catch (e: IIOException) {
+                    println("Can't read input file!")
+                }
+            }
+            "show" -> {
+                println("Input image file:")
+                val imageInput = readln()
+                val fileInput = File(imageInput)
+                val image = ImageIO.read(fileInput)
+                println("Message:")
+                val outputMessage = mutableListOf<Int>()
+                for (y in 0 until image.height) {
+                    for (x in 0 until image.width) {
+                        val color = Color(image.getRGB(x, y))
+                        outputMessage += (color.blue).toString(2).takeLast(1).toInt()
+                    }
+                }
+                println(outputMessage.joinToString("").split("000000000000000000000011").first().chunked(8))
+                outputMessage.joinToString("").split("000000000000000000000011").first().chunked(8).forEach { print(it.toInt(2).toChar()) }
+                println()
+            }
+            "exit" -> { println("Bye!"); break }
+            else -> println("Wrong task: $a")
+        }
+    }
+}
+fun main() {
+    go()
+}
+
+ */
