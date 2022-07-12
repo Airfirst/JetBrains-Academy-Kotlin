@@ -1,0 +1,256 @@
+Description
+In the last stage, implement the checkout command. It allows a user to switch between commits and restore the contents of the files according to the current commit.
+
+Get the files you need from the commit directory by the commit id and rewrite the current files.
+
+.
+├── vcs
+│   ├── commits
+│   │   ├── 2853da19f31cfc086cd5c40915253cb28d5eb01c
+│   │   │   ├── file1.txt
+│   │   │   └── file2.txt
+│   │   └── 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a
+│   │       ├── file1.txt
+│   │       └── file2.txt
+│   ├── config.txt
+│   ├── index.txt
+│   └── log.txt
+├── file1.txt
+├── file2.txt
+└── untracked_file.txt
+Objectives
+The checkout command must be passed to the program together with the commit ID to indicate which commit should be used. If a commit with the given ID exists, the contents of the tracked file should be restored in accordance with this commit.
+
+Do not create file1.txt, file2.txt and untracked_file.txt. This is an example of the files that a user of your version control system will work with.
+Examples
+The greater-than symbol followed by a space (> ) represents the user input. Note that it's not part of the input.
+
+Example 1: the log argument
+
+commit 2853da19f31cfc086cd5c40915253cb28d5eb01c
+Author: John
+Changed several lines of code
+
+commit 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a
+Author: John
+Added several lines of code
+Example 2: the checkout 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a argument
+
+Switched to commit 0b4f05fcd3e1dcc47f58fed4bb189196f99da89a.
+Example 3: the checkout fb92cc1be7f60c8d9acf74cbd4a67841d8d2e844 argument
+
+Commit does not exist.
+Example 4: the checkout argument
+
+Commit id was not passed.
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+package svcs
+
+import java.io.File
+import java.security.MessageDigest
+
+fun hash(input: String): StringBuffer {
+        //Reading data from user
+        val message = input
+        //Creating the MessageDigest object
+        val md = MessageDigest.getInstance("SHA-1")
+        //Passing data to the created MessageDigest Object
+        md.update(message.toByteArray())
+        //Compute the message digest
+        val digest = md.digest()
+        //Converting the byte array in to HexString format
+        val hexString = StringBuffer()
+        for (i in digest.indices) {
+            hexString.append(Integer.toHexString(0xFF and digest[i].toInt()))
+        }
+        return hexString
+    }
+
+//-------------------------------------------------------------------------
+fun createVCSFolder() {
+    val dir = File("vcs")
+    if (!dir.exists()) dir.mkdir()
+}
+fun createConfig() {
+    val config = File("vcs\\config.txt")
+    if (!config.exists()) config.createNewFile()
+}
+fun createIndex() {
+    val index = File("vcs\\index.txt")
+    if (!index.exists()) index.createNewFile()
+}
+fun createCommit() {
+    val commits = File("vcs\\commits")
+    if (!commits.exists()) commits.mkdir()
+}
+fun createLog() {
+    val log = File("vcs\\log.txt")
+    if (!log.exists()) log.createNewFile()
+}
+
+fun config(inputName: String): String {
+    if (inputName == "") {
+        val fileConfig = File("vcs\\config.txt")
+        if (fileConfig.readText() == "") {
+            println("Please, tell me who you are.")
+        } else {
+            println("The username is ${fileConfig.readText()}.")
+        }
+    } else {
+        val fileConfig = File("vcs\\config.txt")
+        fileConfig.writeText(inputName)
+        println("The username is ${fileConfig.readText()}.")
+    }
+    return inputName
+}
+
+fun add(inputFile: String): String {
+    val fileAdd = File("vcs\\index.txt")
+    if (inputFile == "") {
+
+        if (fileAdd.readText() == "") {
+            println("Add a file to the index.")
+        } else {
+            println("Tracked files:")
+            println(fileAdd.readText())
+        }
+    } else if (File(inputFile).exists()) {
+        println("The file '$inputFile' is tracked.")
+        if (fileAdd.readText() == "") {
+            fileAdd.writeText(inputFile)
+        } else {
+            fileAdd.appendText("\n$inputFile")
+        }
+    } else if (!File(inputFile).exists()) {
+        println("Can't find '$inputFile'.")
+    }
+
+    val index2 = File("vcs\\index2.txt")
+    index2.writeText("test")
+
+    return inputFile
+}
+
+fun log() {
+    val log = File("vcs\\log.txt")
+    if (log.readText() == "") println("No commits yet.") else println(log.readText())
+}
+
+fun commit(input: String) {
+    val file = File("vcs\\index.txt")
+    val list = file.readLines()
+    val file1 = File(list[0]).readText()
+    val file2 = File(list[1]).readText()
+    val commit = file1 + file2
+    val hashFile = hash(commit).toString()
+
+    val hashFile2 = File("vcs\\index2.txt").readText()
+
+    if (input == "") {
+        println("Message was not passed.")
+    } else if (hashFile == hashFile2) {
+        println("Nothing to commit.")
+    } else if (hashFile != hashFile2) {
+        val temp = File("vcs\\temp.txt")
+        val log = File("vcs\\log.txt")
+
+        File("vcs\\commits\\$hashFile")
+
+        val file11 = File("vcs\\commits\\$hashFile\\${File(list[0])}")
+        val file22 = File("vcs\\commits\\$hashFile\\${File(list[1])}")
+
+        File(list[0]).copyTo(file11)
+        File(list[1]).copyTo(file22)
+
+        temp.writeText("\ncommit $hashFile")
+        println("Changes are committed.")
+
+        val author = File("vcs\\config.txt").readText()
+        temp.appendText("\nAuthor: $author")
+
+        temp.appendText("\n$input\n")
+
+        temp.appendText(log.readText())
+        log.writeText(temp.readText())
+        log.copyTo(temp, true)
+
+        val index2 = File("vcs\\index2.txt")
+        index2.writeText(hashFile)
+    }
+}
+
+fun checkout(checkoutInput: String) {
+
+    val commit = File("vcs\\commits\\$checkoutInput")
+    val files = commit.list()?.toMutableList()
+
+    val file = File("vcs\\index.txt")
+    val list = file.readLines()
+    val file1 = File("${File(list[0])}")
+    val file2 = File("${File(list[1])}")
+
+    val commits = File("vcs\\commits")
+    val commitsList = commits.list()
+
+    if (checkoutInput == "") {
+        println("Commit id was not passed.")
+    } else if (commitsList != null) {
+        if (!commitsList.contains(checkoutInput)) {
+            println("Commit does not exist.")
+        } else /*if (commitsList.contains(checkoutInput))*/ {
+
+            File("vcs\\commits\\$checkoutInput\\${File(files!![0])}").copyTo(file1, true)
+            File("vcs\\commits\\$checkoutInput\\${File(files[1])}").copyTo(file2, true)
+
+            println("Switched to commit $checkoutInput.")
+        }
+    }
+}
+
+//------------------------------------------------------------------
+
+fun main(args: Array<String>) {
+    createVCSFolder()
+    createConfig()
+    createIndex()
+    createCommit()
+    createLog()
+
+    val text = """
+These are SVCS commands:
+config     Get and set a username.
+add        Add a file to the index.
+log        Show commit logs.
+commit     Save changes.
+checkout   Restore a file.
+"""
+    when {
+        args.isEmpty() -> println(text)
+        args[0] == "--help" -> println(text)
+        args[0] == "config" -> {
+            if (args.size == 1) { config("") }
+            if (args.size == 2) { config(args[1]) }
+        }
+        args[0] == "add" -> {
+            if (args.size == 1) { add("") }
+            if (args.size == 2) { add(args[1]) }
+        }
+        args[0] == "log" -> log()
+        args[0] == "commit" -> {
+        if (args.size == 1) { commit("") }
+        if (args.size == 2) { commit(args[1]) }
+    }
+
+        args[0] == "checkout" ->  {
+            if (args.size == 1) { checkout("") }
+            if (args.size == 2) { checkout(args[1]) }
+        }
+        else -> println("'${args[0]}' is not a SVCS command.")
+    }
+
+}
