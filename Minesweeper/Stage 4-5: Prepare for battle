@@ -1,0 +1,258 @@
+Description
+We managed to create the minefield and fill it with clues: now it's time to play! Let's give our player the opportunity to guess where the mines are with the help of our hints.
+
+All the numbers are still shown to the player, but now the mines are not. To win, the player must find all the mines on the field by marking them.
+
+Update the field input and add the coordinate grid like in the examples so that the player can mark cells by entering their coordinates.
+
+Objectives
+Your upgraded program should meet the following requirements:
+
+After initializing the field, all the numbers are shown to the player, but not the positions of the mines.
+
+The player sees the message “Set/delete mine marks (x and y coordinates):” and enters two numbers as coordinates on the field.
+
+The user input is treated according to the rules:
+
+If the player enters the coordinates of a non-marked cell, the program marks the cell, which means that the player thinks a mine is located there.
+
+If the player enters the coordinates of a cell with a number, the program should print the message “There is a number here!” and ask the player again without printing the minefield, since cells with numbers are guaranteed to be free of mines.
+
+If the player enters the coordinates of a marked cell, the cell becomes unmarked. This is necessary because the game ends only if all the marks are correct, but the player can mark more cells than there are mines.
+
+After successfully marking or unmarking a cell, the new minefield state is printed. The symbol . is used to represent non-marked cells, and * is for marked ones. The prompt for the player's next move is printed until the game is finished.
+
+When the player marks all the mines correctly without marking any empty cells, they win and the game ends. If the player has marked extra cells that do not contain mines, they continue playing. After clearing all the excess mine marks, the player wins. Print the message “Congratulations! You found all the mines!” after the final field state.
+
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+
+package minesweeper
+
+import kotlin.random.Random
+
+fun main() {
+    val field = mutableListOf<MutableList<String>>()
+    for (i in 0..8) {
+        val row = mutableListOf<String>()
+        for (j in 0..8) {
+            row.add(".")
+        }
+        field.add(row)
+    }
+//----------------(entering the mines)-------------------------------------------
+    print("How many mines do you want on the field? ")
+    val numMines = readln().toInt()
+
+    var count = 0
+    while (count < numMines) {
+        val random1 = Random.nextInt(0, 9)
+        val random2 = Random.nextInt(0, 9)
+        field[random1][random2] = "X"
+        count = 0
+        for (j in 0..8) {
+            for (k in 0..8) {
+                if (field[k][j] == "X") {
+                    count++
+                }
+            }
+        }
+    }
+
+    val field2 = mutableListOf<MutableList<String>>()
+    for (i in 0..8) {
+        val row = mutableListOf<String>()
+        for (j in 0..8) {
+            row.add(field[i][j])
+        }
+        field2.add(row)
+    }
+
+//----------------(corner)------------------------------------------------
+    var point00 = 0
+    var point08 = 0
+    var point80 = 0
+    var point88 = 0
+
+    if (field[0][0] == ".") {
+        if (field[0][1] == "X" || field[1][1] == "X" || field[1][0] == "X") {
+            if (field[0][1] == "X") point00++
+            if (field[1][1] == "X") point00++
+            if (field[1][0] == "X") point00++
+            field[0][0] = point00.toString()
+        }
+    }
+    if (field[8][0] == ".") {
+        if (field[7][0] == "X" || field[7][1] == "X" || field[8][1] == "X") {
+            if (field[7][0] == "X") point80++
+            if (field[7][1] == "X") point80++
+            if (field[8][1] == "X") point80++
+            field[8][0] = point80.toString()
+        }
+    }
+    if (field[0][8] == ".") {
+        if (field[0][7] == "X" || field[1][7] == "X" || field[1][8] == "X") {
+            if (field[0][7] == "X") point08++
+            if (field[1][7] == "X") point08++
+            if (field[1][8] == "X") point08++
+            field[0][8] = point08.toString()
+        }
+    }
+    if (field[8][8] == ".") {
+        if (field[8][7] == "X" || field[7][7] == "X" || field[7][8] == "X") {
+            if (field[8][7] == "X") point88++
+            if (field[7][7] == "X") point88++
+            if (field[7][8] == "X") point88++
+            field[8][8] = point88.toString()
+        }
+    }
+//=========(side)
+    for (i in 1..7) {
+        if (field[i][0] == ".") {
+            var count1 = 0
+            if (field[i - 1][0] == "X") count1++
+            if (field[i - 1][1] == "X") count1++
+            if (field[i][1] == "X") count1++
+            if (field[i + 1][1] == "X") count1++
+            if (field[i + 1][0] == "X") count1++
+            field[i][0] = count1.toString()
+            if (field[i][0] == "0") field[i][0] = "."
+        }
+    }
+    for (i in 1..7) {
+        if (field[i][8] == ".") {
+            var count2 = 0
+            if (field[i - 1][8] == "X") count2++
+            if (field[i - 1][7] == "X") count2++
+            if (field[i][7] == "X") count2++
+            if (field[i + 1][7] == "X") count2++
+            if (field[i + 1][8] == "X") count2++
+            field[i][8] = count2.toString()
+            if (field[i][8] == "0") field[i][8] = "."
+        }
+    }
+    for (i in 1..7) {
+        if (field[0][i] == ".") {
+            var count3 = 0
+            if (field[0][i - 1] == "X") count3++
+            if (field[1][i - 1] == "X") count3++
+            if (field[1][i] == "X") count3++
+            if (field[1][i + 1] == "X") count3++
+            if (field[0][i + 1] == "X") count3++
+            field[0][i] = count3.toString()
+            if (field[0][i] == "0") field[0][i] = "."
+        }
+    }
+    for (i in 1..7) {
+        if (field[8][i] == ".") {
+            var count4 = 0
+            if (field[8][i - 1] == "X") count4++
+            if (field[7][i - 1] == "X") count4++
+            if (field[7][i] == "X") count4++
+            if (field[7][i + 1] == "X") count4++
+            if (field[8][i + 1] == "X") count4++
+            field[8][i] = count4.toString()
+            if (field[8][i] == "0") field[8][i] = "."
+        }
+    }
+//=========(center)
+    for (j in 1..7) {
+        for (i in 1..7) {
+            if (field[i][j] == ".") {
+                var center2 = 0
+                if (field[i - 1][j - 1] == "X") center2++
+                if (field[i - 1][j] == "X") center2++
+                if (field[i - 1][j + 1] == "X") center2++
+                if (field[i][j - 1] == "X") center2++
+                if (field[i][j + 1] == "X") center2++
+                if (field[i + 1][j - 1] == "X") center2++
+                if (field[i + 1][j] == "X") center2++
+                if (field[i + 1][j + 1] == "X") center2++
+                field[i][j] = center2.toString()
+                if (field[i][j] == "0") field[i][j] = "."
+            }
+        }
+    }
+
+//----------------(X -> .)--------------------
+    for (j in 0..8) {
+        for (k in 0..8) {
+            if (field[k][j] == "X") field[k][j] = "."
+        }
+    }
+
+//-------------(print)-------------------------------------------------
+
+    println(" │123456789│")
+    println("—│—————————│")
+    for (j in 0..8) {
+        print("${j + 1}│")
+        for (i in 0..8) {
+            print(field[i][j])
+        }
+        print("│")
+        println("")
+    }
+    println("—│—————————│")
+
+    var count2 = 0
+    var count3 = 0
+    while (count2 != numMines && count3 != numMines) {
+        print("Set/delete mine marks (x and y coordinates): ")
+        val input = readln().toList()
+        val inp1 =  input.first().toString().toInt()
+        val inp2 =  input.last().toString().toInt()
+
+        if (field[inp1 - 1][inp2 - 1] == ".") {
+            field[inp1 - 1][inp2 - 1] = "*"
+            println(" │123456789│")
+            println("—│—————————│")
+            for (j in 0..8) {
+                print("${j + 1}│")
+                for (i in 0..8) {
+                    print(field[i][j])
+                }
+                print("│")
+                println("")
+            }
+            println("—│—————————│")
+        } else if (field[inp1 - 1][inp2 - 1] == "*") {
+            field[inp1 - 1][inp2 - 1] = "."
+            println(" │123456789│")
+            println("—│—————————│")
+            for (j in 0..8) {
+                print("${j + 1}│")
+                for (i in 0..8) {
+                    print(field[i][j])
+                }
+                print("│")
+                println("")
+            }
+            println("—│—————————│")
+        } else println("There is a number here!")
+
+        count2 = 0
+        for (i in 0..8) {
+            for (j in 0..8) {
+                if ("X" in field2[i][j] == "*" in field[i][j]) {
+                    count2++
+                }
+            }
+        }
+        count3 = 0
+        for (j in 0..8) {
+            for (k in 0..8) {
+                if (field[k][j] == "*") {
+                    count3++
+                }
+            }
+        }
+    }
+    println("Congratulations! You found all the mines!")
+}
+
+
+
