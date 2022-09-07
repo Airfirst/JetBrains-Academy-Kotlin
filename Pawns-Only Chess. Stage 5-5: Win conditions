@@ -1,0 +1,739 @@
+Description
+Our game is almost complete. One more thing remains — we need to establish the win/draw conditions.
+
+The game is over when either player succeeds in moving their pawn to the last opposite rank — rank 8 for White, rank 1 for Black. The game is also over when all opposite pawns are captured.
+
+Stalemate (draw) occurs when a player can't make any valid move on their turn.
+
+Objectives
+The program should check whether the winning or stalemate conditions are met after each turn.
+
+If the winning conditions are fulfilled, print White Wins! or Black Wins!, depending on the situation. Then, print Bye! and exit the program.
+
+If it's a stalemate, print Stalemate!, Bye! and exit the program.
+
+
+
+
+
+
+package chess
+
+fun print(field: MutableList<MutableList<String>>) {
+    println("  +---+---+---+---+---+---+---+---+")
+        for (y in 7 downTo 0) {
+            print("${y + 1}")
+            for (x in 0 until field[y].size) {
+                print(field[y][x])
+            }
+            println("")
+            println("  +---+---+---+---+---+---+---+---+")
+        }
+    print("    a   b   c   d   e   f   g   h")
+}
+
+fun abc(input: String, field: MutableList<MutableList<String>>): Int {
+    var inpX = 0
+    for (i in 1..field[2].lastIndex step 2) {
+        when (input[0]) {
+            'a' -> inpX = 1
+            'b' -> inpX = 3
+            'c' -> inpX = 5
+            'd' -> inpX = 7
+            'e' -> inpX = 9
+            'f' -> inpX = 11
+            'g' -> inpX = 13
+            'h' -> inpX = 15
+        }
+    }
+    return inpX
+}
+fun abc2(input: String, field: MutableList<MutableList<String>>): Int {
+    var inpX2 = 0
+    for (i in 1..field[2].lastIndex step 2) {
+        when (input[2]) {
+            'a' -> inpX2 = 1
+            'b' -> inpX2 = 3
+            'c' -> inpX2 = 5
+            'd' -> inpX2 = 7
+            'e' -> inpX2 = 9
+            'f' -> inpX2 = 11
+            'g' -> inpX2 = 13
+            'h' -> inpX2 = 15
+        }
+    }
+    return inpX2
+}
+
+fun w(input: String, field: MutableList<MutableList<String>>, cond: Boolean, y1: Int, y2: Int, inpX: Int): String {
+    var m = "0"
+    var jump1 = "0"
+        if (input[1] == '2' && cond) {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else {
+            when (input[3]) {
+                '3' -> {
+                    field[y2][inpX] = "W"
+                    field[y1][inpX] = " "
+                    m = "1"
+                    print(field)
+                    println("")
+                }
+                '4' -> if (field[y2 - 1][inpX] == " ") {
+                    field[y2][inpX] = "W"
+                    field[y1][inpX] = " "
+                    if (input[0] == 'a' && field[y2][inpX + 2] == "B") jump1 = "1"
+                    if (input[0] == 'h' && field[y2][inpX - 2] == "B") jump1 = "1"
+                    if (input[0] != 'a' &&
+                        input[0] != 'h' &&
+                        (field[y2][inpX - 2] == "B" ||
+                        field[y2][inpX + 2] == "B")) jump1 = "1"
+                    m = "1"
+                    print(field)
+                    println("")
+                }
+                else -> println("Invalid Input")
+            }
+        }
+    } else if (input[1] == '3' && cond) {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] + 1) {
+            field[y2][inpX] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '4' && cond) {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] + 1) {
+            field[y2][inpX] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '5' && cond) {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] + 1) {
+            field[y2][inpX] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '6' && cond) {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] + 1) {
+            field[y2][inpX] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '7' && cond) {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] + 1) {
+            field[y2][inpX] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else println("Invalid Input")
+    return m + jump1
+}
+
+fun w2(input: String, field: MutableList<MutableList<String>>, y1: Int, y2: Int, inpX: Int, inpX2: Int, jump: String): String {
+    var m = "0"
+    var jump1 = "0"
+    if (input[1] == '2') {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else {
+            when {
+                input[3] == '3' -> {
+                    field[y2][inpX2] = "W"
+                    field[y1][inpX] = " "
+                    m = "1"
+                    print(field)
+                    println("")
+                }
+                input[3] == '4' ->
+                    if (field[y2 - 1][inpX] == " ") {
+                        field[y2][inpX2] = "W"
+                        field[y1][inpX] = " "
+                        if (input[0] == 'a' && field[y2][inpX + 2] == "B") jump1 = "1"
+                        if (input[0] == 'h' && field[y2][inpX - 2] == "B") jump1 = "1"
+                        if (input[0] != 'a' &&
+                            input[0] != 'h' &&
+                            (field[y2][inpX - 2] == "B" ||
+                            field[y2][inpX + 2] == "B")) jump1 = "1"
+                        m = "1"
+                        print(field)
+                        println("")
+                    }
+                else -> println("Invalid Input")
+            }
+        }
+    } else if (input[1] == '3') {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '4') {
+            field[y2][inpX2] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '4') {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '5') {
+            field[y2][inpX2] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '5') {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '6' && field[y2][inpX2] == "B") {
+            field[y2][inpX2] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else if (input[3] == '6' && field[y2][inpX2] == " " && field[y1][inpX2] == "B" && jump == "2") {
+            field[y2][inpX2] = "W"
+            field[y1][inpX] = " "
+            field[y1][inpX2] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '6') {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '7') {
+            field[y2][inpX2] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '7') {
+        if (field[y1][inpX] != "W") {
+            println("No white pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '8') {
+            field[y2][inpX2] = "W"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else println("Invalid Input")
+    return m + jump1
+}
+
+fun b(input: String, field: MutableList<MutableList<String>>, cond1: Boolean, y1: Int, y2: Int, inpX: Int): String {
+    var m = "0"
+    var jump1 = "0"
+    if (input[1] == '7' && cond1) {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else {
+            when (input[3]) {
+                '6' -> {
+                    field[y2][inpX] = "B"
+                    field[y1][inpX] = " "
+                    m = "1"
+                    print(field)
+                    println("")
+                }
+                '5' -> if (field[y2][inpX] == " ") {
+                    field[y2][inpX] = "B"
+                    field[y1][inpX] = " "
+                    if (input[0] == 'a' && field[y2][inpX + 2] == "W") jump1 = "2"
+                    if (input[0] == 'h' && field[y2][inpX - 2] == "W") jump1 = "2"
+                    if (input[0] != 'a' &&
+                        input[0] != 'h' &&
+                        (field[y2][inpX - 2] == "W" ||
+                        field[y2][inpX + 2] == "W")) jump1 = "2"
+                    m = "1"
+                    print(field)
+                    println("")
+                }
+                else -> println("Invalid Input")
+            }
+        }
+    } else if (input[1] == '6' && cond1) {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] - 1) {
+            field[y2][inpX] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        }
+        else println("Invalid Input")
+    } else if (input[1] == '5' && cond1) {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] - 1) {
+            field[y2][inpX] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        }
+        else println("Invalid Input")
+    } else if (input[1] == '4' && cond1) {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] - 1) {
+            field[y2][inpX] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        }
+        else println("Invalid Input")
+    } else if (input[1] == '3' && cond1) {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] - 1) {
+            field[y2][inpX] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        }
+        else println("Invalid Input")
+    } else if (input[1] == '2' && cond1) {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == input[1] - 1) {
+            field[y2][inpX] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        }
+        else println("Invalid Input")
+    }
+    else println("Invalid Input")
+    return m + jump1
+}
+
+fun b2(input: String, field: MutableList<MutableList<String>>, y1: Int, y2: Int, inpX: Int, inpX2: Int, jump: String): String {
+    var m = "0"
+    var jump1 = "0"
+    if (input[1] == '7') {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else {
+            when (input[3]) {
+                '6' -> {
+                    field[y2][inpX2] = "B"
+                    field[y1][inpX] = " "
+                    m = "1"
+                    print(field)
+                    println("")
+                }
+                '5' -> if (field[y2][inpX] == " ") {
+                    field[y2][inpX2] = "B"
+                    field[y1][inpX] = " "
+                    if (input[0] == 'a' && field[y2][inpX + 2] == "W") jump1 = "2"
+                    if (input[0] == 'h' && field[y2][inpX - 2] == "W") jump1 = "2"
+                    if (input[0] != 'a' &&
+                        input[0] != 'h' &&
+                        (field[y2][inpX - 2] == "W" ||
+                        field[y2][inpX + 2] == "W")) jump1 = "2"
+                    m = "1"
+                    print(field)
+                    println("")
+                }
+                else -> println("Invalid Input")
+            }
+        }
+    } else if (input[1] == '6') {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '5') {
+            field[y2][inpX2] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        }
+        else println("Invalid Input")
+    } else if (input[1] == '5') {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '4') {
+            field[y2][inpX2] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '4') {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '3' && field[y2][inpX2] == "W") {
+            field[y2][inpX2] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else if (input[3] == '3' && field[y2][inpX2] == " " && field[y1][inpX2] == "W" && jump == "1") {
+            field[y2][inpX2] = "B"
+            field[y1][inpX] = " "
+            field[y1][inpX2] = " "
+            m = "1"
+            print(field)
+            println("")
+        } else println("Invalid Input")
+    } else if (input[1] == '3') {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '2') {
+            field[y2][inpX2] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        }
+        else println("Invalid Input")
+    } else if (input[1] == '2') {
+        if (field[y1][inpX] != "B") {
+            println("No black pawn at ${input[0]}${input[1]}")
+        } else if (input[3] == '1') {
+            field[y2][inpX2] = "B"
+            field[y1][inpX] = " "
+            m = "1"
+            print(field)
+            println("")
+        }
+        else println("Invalid Input")
+    }
+    else println("Invalid Input")
+    return m + jump1
+}
+//----------------------------------------------------------------------------------------
+fun main() {
+    val field = mutableListOf<MutableList<String>>()
+    for (y in 0..7) {
+        val row = mutableListOf<String>()
+        for (x in 0..7) {
+            row.add(" | ")
+            row.add(" ")
+        }
+        row.add(" |")
+        field.add(row)
+    }
+    for (x in 1 until field[6].size step 2) {
+        field[6][x] = "B"
+    }
+    for (x in 1 until field[1].size step 2) {
+        field[1][x] = "W"
+    }
+
+    println(" Pawns-Only Chess")
+    println("First Player's name:")
+    val white = readln()
+    println("Second Player's name:")
+    val black = readln()
+    print(field)
+    println("")
+
+    var n = ""
+    var turn = true
+    val check = Regex("[a-h][1-8][a-h][1-8]")
+    var jump = "0"
+
+    while (n != "exit") {
+        if (turn) {
+            var m = 0
+            while(m == 0) {
+                println("${white}'s turn:")
+                val input = readln()
+                val inpX = abc(input, field)
+                val inpX2 = abc2(input, field)
+
+                if (input == "exit") {
+                    n = "exit"
+                    m = 1
+                } else {
+                    val y1 = input[1].toString().toInt() - 1
+                    val y2 = input[3].toString().toInt() - 1
+
+                    val cond0 = input.matches(check) &&
+                            input[1] <= input[3] &&
+                            field[y2][inpX] == " "
+                    val cond1 = cond0 &&
+                            input[0] == input[2] &&
+                            input[0] != 'a' &&
+                            input[0] != 'h' &&
+                            (field[y2][inpX - 2] != "B" || field[y2][inpX + 2] != "B")
+                    val cond11 = cond0 &&
+                            input[0] == input[2] &&
+                            input[0] == 'a' &&
+                            field[y2][inpX + 2] != "B"
+                    val cond111 = cond0 &&
+                            input[0] == input[2] &&
+                            input[0] == 'h' &&
+                            field[y2][inpX - 2] != "B"
+//--------------------------------------------------------------------------------------------------------
+                    val cond2 = cond0 &&
+                            input[0] == 'a' &&
+                            (field[y2][inpX + 2] == "B" ||
+                            jump == "2")
+                    val cond3 = cond0 &&
+                            input[0] != 'a' &&
+                            input[0] != 'h' &&
+                            (field[y2][inpX - 2] == "B" || field[y2][inpX + 2] == "B" ||
+                            jump == "2")
+                    val cond4 = cond0 &&
+                            input[0] == 'h' &&
+                            (field[y2][inpX - 2] == "B" ||
+                            jump == "2")
+
+                    if (cond1) {
+                        val z = w(input, field, cond1, y1, y2, inpX)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond11) {
+                        val z = w(input, field, cond11, y1, y2, inpX)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond111) {
+                        val z = w(input, field, cond111, y1, y2, inpX)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond2) {
+                        val z = w2(input, field, y1, y2, inpX, inpX2, jump)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond3) {
+                        val z = w2(input, field, y1, y2, inpX, inpX2, jump)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond4) {
+                        val z = w2(input, field, y1, y2, inpX, inpX2, jump)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else println("Invalid Input")
+                }
+                var count = 0
+                var count2 = 0
+
+                for (y in 0 until 8) {
+                    for (x in 1 until 16 step 2) {
+                        if (field[y][x] == "B") count++
+                    }
+                }
+
+                for (y in 0 until 7) {
+                    if (field[y][1] == "B" && jump != "1") {
+                        val x = 1
+                        if (field[y - 1][x] == " " || field[y - 1][x + 2] == "W") {
+                            count2++
+                        }
+                    }
+                    for (x in 3 until field[0].size - 2 step 2) {
+                        if (field[y][x] == "B" && jump != "2") {
+                            if (field[y - 1][x] == " " || (field[y - 1][x + 2] == "W" || field[y - 1][x - 2] == "W")) {
+                                count2++
+                            }
+                        }
+                    }
+                    if (field[y][15] == "B" && jump != "1") {
+                        val x = 15
+                        if (field[y - 1][x] == " " || field[y - 1][x - 2] == "W") {
+                            count2++
+                        }
+                    }
+                    if (field[y][1] == "B" && jump == "1") {
+                        val x = 1
+                        if (field[y - 1][x] == " " || field[y][x + 2] == "W") {
+                            count2++
+                        }
+                    }
+                    for (x in 3 until field[0].size - 2 step 2) {
+                        if (field[y][x] == "B" && jump == "1") {
+                            if ((field[y - 1][x] == " " || field[y][x + 2] == "W" || field[y - 1][x - 2] == "W") ||
+                                (field[y - 1][x] == " " || field[y - 1][x + 2] == "W" || field[y][x - 2] == "W")
+                            ) {
+                                count2++
+                            }
+                        }
+                    }
+                    if (field[y][15] == "B" && jump == "1") {
+                        val x = 15
+                        if (field[y - 1][x] == " " || field[y][x - 2] == "W") {
+                            count2++
+                        }
+                    }
+                }
+
+                if (input[3] == '8' && m == 1) {
+                    println("White Wins!")
+                    n = "exit"
+                } else if (count == 0) {
+                    println("White Wins!")
+                    n = "exit"
+                } else if (count2 == 0) {
+                    println("Stalemate!")
+                    n = "exit"
+                }
+            }
+            turn = false
+
+        } else {
+            var m = 0
+
+            while (m == 0) {
+                println("${black}'s turn:")
+                val input = readln()
+                val inpX = abc(input, field)
+                val inpX2 = abc2(input, field)
+
+                if (input != "exit") {
+                    val y1 = input[1].toString().toInt() - 1
+                    val y2 = input[3].toString().toInt() - 1
+                    val cond0 = input.matches(check) &&
+                            input[1] >= input[3] &&
+                            field[y2][inpX] == " "
+                    val cond1 = cond0 &&
+                            input[0] == input[2] &&
+                            input[0] != 'a' &&
+                            input[0] != 'h' &&
+                            (field[y2][inpX - 2] != "W" || field[y2][inpX + 2] != "W")
+                    val cond11 = cond0 &&
+                            input[0] == input[2] &&
+                            input[0] == 'a' &&
+                            field[y2][inpX + 2] != "W"
+                    val cond111 = cond0 &&
+                            input[0] == input[2] &&
+                            input[0] == 'h' &&
+                            field[y2][inpX - 2] != "W"
+//--------------------------------------------------------------------------------------------------------
+                    val cond2 = cond0 &&
+                            input[0] == 'a' &&
+                            (field[y2][inpX + 2] == "W" ||
+                            jump == "1")
+                    val cond3 = cond0 &&
+                            input[0] != 'a' &&
+                            input[0] != 'h' &&
+                            (field[y2][inpX - 2] == "W" || field[y2][inpX + 2] == "W" ||
+                            jump == "1")
+                    val cond4 = cond0 &&
+                            input[0] == 'h' &&
+                            (field[y2][inpX - 2] == "W" ||
+                            jump == "1")
+                    if (cond1) {
+                        val z = b(input, field, cond1, y1, y2, inpX)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond11) {
+                        val z = b(input, field, cond11, y1, y2, inpX)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond111) {
+                        val z = b(input, field, cond111, y1, y2, inpX)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond2) {
+                        val z = b2(input, field, y1, y2, inpX, inpX2, jump)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond3) {
+                        val z = b2(input, field, y1, y2, inpX, inpX2, jump)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else if (cond4) {
+                        val z = b2(input, field, y1, y2, inpX, inpX2, jump)
+                        m = z[0].toString().toInt()
+                        jump = z[1].toString()
+                    } else println("Invalid Input")
+                } else {
+                    n = "exit"
+                    m = 1
+                }
+
+                var count = 0
+                var count2 = 0
+                for (y in 0 until 8) {
+                    for (x in 1 until 16 step 2) {
+                        if (field[y][x] == "W") count++
+                    }
+                }
+
+                for (y in 0 until 7) {
+                    if (field[y][1] == "W" && jump != "2") {
+                        val x = 1
+                        if (field[y + 1][x] == " " || field[y + 1][x + 2] == "B") {
+                            count2++
+                        }
+                    }
+                    for (x in 3 until field[0].size - 2 step 2) {
+                        if (field[y][x] == "W" && jump != "2") {
+                            if (field[y + 1][x] == " " || (field[y + 1][x + 2] == "B" || field[y + 1][x - 2] == "B")) {
+                                count2++
+                            }
+                        }
+                    }
+                    if (field[y][15] == "W" && jump != "2") {
+                        val x = 15
+                        if (field[y + 1][x] == " " || field[y + 1][x - 2] == "B") {
+                            count2++
+                        }
+                    }
+                    if (field[y][1] == "W" && jump == "2") {
+                        val x = 1
+                        if (field[y + 1][x] == " " || field[y][x + 2] == "B") {
+                            count2++
+                        }
+                    }
+                    for (x in 3 until field[0].size - 2 step 2) {
+                    if (field[y][x] == "W" && jump == "2") {
+                            if ((field[y + 1][x] == " " || field[y][x + 2] == "B" || field[y + 1][x - 2] == "B") ||
+                                (field[y + 1][x] == " " || field[y + 1][x + 2] == "B" || field[y][x - 2] == "B")
+                            ) {
+                                count2++
+                            }
+                        }
+                    }
+                    if (field[y][15] == "W" && jump == "2") {
+                        val x = 15
+                        if (field[y + 1][x] == " " || field[y][x - 2] == "B") {
+                            count2++
+                        }
+                    }
+                }
+                if (count == 0) {
+                    println("Black Wins!")
+                    n = "exit"
+                } else if (input[3] == '1' && m == 1) {
+                    println("Black Wins!")
+                    n = "exit"
+                } else if (count2 == 0) {
+                    println("Stalemate!")
+                    n = "exit"
+                }
+            }
+            turn = true
+        }
+    }
+    println("Bye!")
+}
