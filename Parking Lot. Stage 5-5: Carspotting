@@ -1,0 +1,104 @@
+package parking
+
+fun main() {
+    var a = false
+    var lot = mutableListOf<MutableList<String>>()
+
+    while (!a) {
+        val input = readln().split(" ").toMutableList()
+
+        when (input[0]) {
+            "exit" -> a = true
+
+            "create" -> {
+                lot = MutableList(input[1].toInt()) { MutableList(2) { "" } }
+                println("Created a parking lot with ${input[1]} spots.")
+            }
+
+            else -> {
+                if (lot.isNotEmpty()) {
+                    when (input[0]) {
+                        "park" -> {
+                            val index = mutableListOf<Int>()
+                            for (i in lot.indices) {
+                                if (lot[i][0] == "") {
+                                    index.add(i)
+                                }
+                            }
+                            if (index.isEmpty()) {
+                                println("Sorry, the parking lot is full.")
+                            } else {
+                                lot[index[0]][0] = input[1]
+                                lot[index[0]][1] = input[2]
+                                println("${input[2]} car parked in spot ${index[0] + 1}.")
+                            }
+                        }
+                        "leave" -> {
+                            if (lot[input[1].toInt() - 1][0] != "") {
+                                lot[input[1].toInt() - 1][0] = ""
+                                lot[input[1].toInt() - 1][1] = ""
+                                println("Spot ${input[1]} is free.")
+                            } else if (lot[input[1].toInt() - 1][0] == "") {
+                                println("There is no car in spot ${input[1]}.")
+                            }
+                        }
+                        "status" -> {
+                            var count = 0
+                            for (i in lot.indices) {
+                                if (lot[i][0] != "") {
+                                    println("${i + 1} ${lot[i][0]} ${lot[i][1]}")
+                                    count++
+                                }
+                            }
+                            if (count == 0) println("Parking lot is empty.")
+                        }
+                        "reg_by_color" -> {
+                            val reg1 = Reg(lot, input[1])
+                            reg1.regByColor()
+                        }
+                        "spot_by_color" -> {
+                            val reg1 = Reg(lot, input[1])
+                            reg1.regBySpot()
+                        }
+                        "spot_by_reg" -> {
+                            val reg1 = Reg(lot, input[1])
+                            reg1.regByReg()
+                        }
+                    }
+                } else println("Sorry, a parking lot has not been created.")
+            }
+        }
+    }
+}
+
+class Reg(private val lot: MutableList<MutableList<String>>, private val inp: String) {
+    private val list = mutableListOf<String>()
+    private var count = 0
+    fun regByColor() {
+        for (i in lot.indices) {
+            if (lot[i][1].lowercase() == inp.lowercase()) {
+                list.add(lot[i][0])
+                count++
+            }
+        }
+        if (count != 0) println(list.joinToString(", ")) else println("No cars with color $inp were found.")
+    }
+    fun regBySpot() {
+        for (i in lot.indices) {
+            if (lot[i][1].lowercase() == inp.lowercase()) {
+                list.add((i + 1).toString())
+                count++
+            }
+        }
+        if (count != 0) println(list.joinToString(", ")) else println("No cars with color $inp were found.")
+    }
+    fun regByReg() {
+        for (i in lot.indices) {
+            if (lot[i][0].lowercase() == inp.lowercase()) {
+                list.add((i + 1).toString())
+                count++
+            }
+        }
+        if (count != 0) println(list.joinToString(", ")) else println("No cars with registration number $inp were found.")
+    }
+}
