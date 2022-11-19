@@ -1,0 +1,212 @@
+package calculator
+import kotlin.math.pow
+import java.math.BigInteger
+
+fun replace(inp: String): String {                                     //clear input
+    return inp
+        .replace(Regex(" "), "").trim()
+        .replace(Regex("""--"""), "+")
+        .replace(Regex("""\+-"""), "-")
+        .replace(Regex("""\++"""), "+")
+        .replace(Regex("""\+"""), " + ")
+        .replace(Regex("""-"""), " - ")
+        .replace(Regex("""\*"""), " * ")
+        .replace(Regex("""/"""), " / ")
+        .replace(Regex("""\^"""), " ^ ")
+        .replace(Regex("""\("""), "( ")
+        .replace(Regex("""\)"""), " )")
+}
+
+fun variable(input: String, map: MutableMap<String, String>): MutableMap<String, String> {
+    val inp = input.replace(Regex(" "), "")           // additional clear input
+    val left = inp.substringBefore('=')                        // left part form "="
+    val right = inp.substringAfter('=')                        // right part form "="
+
+    val reg = """[a-zA-Z]+=([a-zA_Z]+|-?\d+)""".toRegex()                //exclude wrong input
+    val regLeft = """[a-zA-Z]+""".toRegex()
+    val regRight = """\w|-?\D+|-?\d+""".toRegex()
+    val regRightLetter = """[a-zA-Z]+""".toRegex()
+
+    if (!regLeft.matches(left)) println("Invalid identifier")
+    else if (!regRight.matches(right)) println("Invalid assignment")
+    else if (regRightLetter.matches(right) && !map.containsKey(right) ) println("Unknown variable")
+    else if (reg.matches(inp)) {                                       //creating map of assignments
+        map[left] = right
+    }
+    return map
+}
+
+fun transformation(map: MutableMap<String, String>): MutableMap<String, BigInteger?> {
+    val map2 = mutableMapOf<String, BigInteger?>()
+
+    for ((k, v) in map) {                                              //converting letters into integers
+        try {
+            map[k]?.toBigInteger()
+        } catch (e: NumberFormatException) {
+            map[k] = map[map[k]].toString()
+        }
+    }
+
+    for ((k, v) in map) {
+        map2[k] = map[k]?.toBigInteger()
+    }
+    return map2
+}
+
+fun converting(input: String, map2: MutableMap<String, BigInteger?>): List<String> {
+    val inp = input.split(" ").toMutableList()                // converting letters in expression into numbers
+    val reg = """-?[a-zA-Z]+""".toRegex()
+    inp.forEach {
+        if (reg.matches(it)) {
+            val a = inp.indexOf(it)
+            inp[a] = map2[inp[a]].toString()
+        }
+    }
+    return inp.toList()
+}
+
+fun regexp(input: String): Boolean {                                    //checking expression
+    val reg = """(\(* [+]?\w+|[-]?\w+)( [+\-*/^] ((\( )*\w+( \))*))*""".toRegex()
+    var count1 = 0
+    var count2 = 0
+    input.forEach {
+        if (it == '(' ) count1++
+        if (it == ')' ) count2++
+    }
+    if (count1 != count2 && !reg.matches(input)) println("Invalid expression")
+    return count1 == count2 && reg.matches(input)
+}
+
+fun prior(input: String): Int {
+    var a = 0
+    when (input) {
+        "-", "+" -> a = 1
+        "*", "/" -> a = 2
+        "^" -> a = 3
+    }
+    return a
+}
+
+fun infixToPostfix(input: List<String>): MutableList<String> {
+    val postfixList = mutableListOf<String>()
+    val stack = mutableListOf<String>()
+    val reg = """-?\w+""".toRegex()
+    val regOperand = """[+\-*/^()]""".toRegex()
+    input.forEach {
+        if (reg.matches(it)) {
+            postfixList.add(it)                                    // add figure to postFix
+        } else if (regOperand.matches(it)) {
+            if (stack.isEmpty()|| it == "(") stack.add(it)
+            else if (it == ")") {
+                var index = 0
+                for (i in stack.lastIndex downTo 0) {
+                    if (stack[i] == "(") {
+                        index = i
+                        break
+                    }
+                }
+                for (i in stack.lastIndex downTo index + 1) {
+                    postfixList.add(stack[i])
+                    stack.removeAt(i)
+                }
+                stack.removeAt(index)
+            } else if (prior(it) > prior(stack.last())) {
+                stack.add(it)
+            } else if (prior(it) <= prior(stack.last())) {
+                for (i in stack.lastIndex downTo 0) {
+                    if (stack[i] == "(") {
+                        break
+                    } else {
+                        postfixList.add(stack[i])
+                        stack.removeAt(i)
+                    }
+                }
+                stack.add(it)
+            }
+        }
+    }
+    for (i in stack.lastIndex downTo 0) postfixList.add(stack[i])
+    return postfixList
+}
+
+fun countingPostfix(postfixList: MutableList<String>): String {
+    val stack = mutableListOf<String>()
+    val reg = """-?\d+""".toRegex()
+    val regOperand = """[+\-*/^]""".toRegex()
+    for (i in postfixList) {
+        if (reg.matches(i)) {
+            stack.add(i)
+        } else if (regOperand.matches(i)) {
+            val a = stack[stack.lastIndex - 1].toBigInteger()
+            val b = stack.last().toBigInteger()
+            when (i) {
+                "+" -> {
+                    val calc = a + b
+                    repeat(2) { stack.removeAt(stack.lastIndex) }
+                    stack.add(calc.toString())
+                }
+                "-" -> {
+                    val calc = a - b
+                    repeat(2) { stack.removeAt(stack.lastIndex) }
+                    stack.add(calc.toString())
+                }
+                "*" -> {
+                    val calc = a * b
+                    repeat(2) { stack.removeAt(stack.lastIndex) }
+                    stack.add(calc.toString())
+                }
+                "/" -> {
+                    val calc = a / b
+                    repeat(2) { stack.removeAt(stack.lastIndex) }
+                    stack.add(calc.toString())
+                }
+                "^" -> {
+                    val calc = stack[stack.lastIndex - 1].toInt().toDouble().pow(stack.last().toInt()).toInt()
+                    repeat(2) { stack.remove(stack.last()) }
+                    stack.add(calc.toString())
+                }
+            }
+        }
+    }
+    return stack[0]
+}
+
+fun main() {
+    var b = false
+    val map = mutableMapOf<String, String>()
+    var map3 = mutableMapOf<String, BigInteger?>()
+    while (!b) {
+        val input = readln()
+        val inp = replace(input)                                        //clear input
+
+        val reg = """ /..*""".toRegex()                                   //regex for commands
+        val reg2 = """\w+""".toRegex()                                  //regex for Unknown variables
+        if (reg.matches(inp)) {
+            when (inp) {
+                " / exit" -> {
+                    println("Bye!")
+                    b = true
+                }
+                " / help" -> println("The program calculates expression")
+                else -> println("Unknown command")
+            }
+        } else if (inp == "") {
+            continue
+        } else if (inp.contains('=')) {
+            val map2 = variable(inp, map)                 //creating a map of assignment (num or letter)
+            map3 = transformation(map2)                   //creating a map of assigned numbers
+        } else if (reg2.matches(inp)) {
+            if (!map3.containsKey(inp)) println("Unknown variable")
+            else println(map3[inp])                       //printing result if we have only variable without assignment
+        } else if (regexp(inp)) {
+            val toPostfix = converting(inp, map3)
+            val a = infixToPostfix(toPostfix)
+            println(countingPostfix(a))                            //printing result
+        } else {
+            println("Invalid expression")
+        }
+    }
+}
+
+
+
