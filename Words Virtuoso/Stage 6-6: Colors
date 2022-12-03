@@ -1,0 +1,129 @@
+package wordsvirtuoso
+import java.io.File
+import kotlin.system.exitProcess
+//import kotlin.random.Random
+
+fun main(args: Array<String>) {
+
+    if (args.size != 2) {
+        println("Error: Wrong number of arguments.")
+        exitProcess(0)
+    }
+
+    val fileName = args[0]
+    val temp = File(fileName)
+    if (!temp.exists()) {
+        println("Error: The words file $fileName doesn't exist.")
+        exitProcess(0)
+    }
+    val fileName2 = args[1]
+    val temp2 = File(fileName2)
+    if (!temp2.exists()) {
+        println("Error: The candidate words file $fileName2 doesn't exist.")
+        exitProcess(0)
+    }
+
+    val full = temp.readLines().toMutableList()
+    val regex = """[a-zA-Z]{5}""".toRegex()
+    var count = 0
+    for (i in full) {
+        if (i.length != 5 || !regex.matches(i) || i.toSet().size != 5) count++
+    }
+    if (count != 0) {
+        println("Error: $count invalid words were found in the $fileName file.")
+        exitProcess(0)
+    }
+
+    val cand = temp2.readLines()
+    var count2 = 0
+    for (i in cand) {
+        if (i.length != 5 || !regex.matches(i) || i.toSet().size != 5) count2++
+    }
+    if (count2 != 0) {
+        println("Error: $count2 invalid words were found in the $fileName2 file.")
+        exitProcess(0)
+    }
+
+    var count3 = 0
+    for (j in 0 until full.size) full[j] = full[j].lowercase()
+    for (i in cand) {
+        if (!full.contains(i.lowercase())) count3++
+    }
+    if (count3 !=0) {
+        println("Error: $count3 candidate words are not included in the $fileName file.")
+        exitProcess(0)
+    }
+
+    println("Words Virtuoso")
+    println("")
+
+    val secWord = cand.random()    //[Random.nextInt(0, cand.size)]
+
+    var n = false
+    var count4 = 0
+    var clue: MutableList<String>
+    val list = mutableListOf<String>()
+    val wrongChar = mutableSetOf<String>()
+    while (!n) {
+        println("Input a 5-letter word:")
+        val start = System.currentTimeMillis()
+        count4++
+        val guess = readln()
+
+        if (guess == "exit") {
+            println("The game is over.")
+            n = true
+        } else if (guess == secWord) {
+            n = if (count4 == 1) {
+                println("")
+                for (i in 0..4) print("\u001B[48:5:10m${guess[i].uppercase()}\u001B[0m")
+                println("""     
+                                   
+                    Correct!
+                    Amazing luck! The solution was found at once.
+                """.trimIndent())
+                true
+            } else {
+
+                list.forEach { println(it) }
+                println("")
+
+                val end = System.currentTimeMillis()
+                val duration = end - start  // Milliseconds as a Long
+                for (i in 0..4) print("\u001B[48:5:10m${guess[i].uppercase()}\u001B[0m")
+                println("""   
+                                     
+                    Correct!
+                    The solution was found after $count4 tries in $duration seconds.
+                """.trimIndent())
+                true
+            }
+        } else if (guess.length != 5) println("The input isn't a 5-letter word.")
+        else if (!regex.matches(guess)) println("One or more letters of the Input aren't valid.")
+        else if (guess.toSet().size != 5) println("The input has duplicate letters.")
+        else if (!full.contains(guess)) println("The input word isn't included in my words list.")
+        else {
+            clue = mutableListOf("_", "_", "_", "_", "_")
+            println("")
+            for (i in 0..4) {
+                if (guess[i] == secWord[i]) clue[i] = "\u001B[48:5:10m${guess[i].uppercase()}\u001B[0m"
+                else if (guess[i] != secWord[i] && secWord.contains(guess[i])) clue[i] = "\u001B[48:5:11m${guess[i].uppercase()}\u001B[0m"
+                else {
+                    clue[i] = "\u001B[48:5:7m${guess[i].uppercase()}\u001B[0m"
+                    wrongChar += guess[i].uppercase()
+                }
+            }
+            list.add(clue.joinToString(""))
+            if (list.isEmpty())  {
+                for (i in 0..4) print(clue[i])
+            } else {
+                for (i in 0 until list.size - 1) println(list[i])
+                for (i in 0..4) print(clue[i])
+            }
+            println("")
+            val word = wrongChar.toList().sorted().joinToString("")
+            print("\u001B[48:5:14m$word\u001B[0m")
+            println("")
+        }
+    }
+}
