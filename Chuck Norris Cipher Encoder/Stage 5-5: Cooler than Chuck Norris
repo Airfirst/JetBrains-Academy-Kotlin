@@ -1,0 +1,114 @@
+package chucknorris
+
+fun main() {
+    var n = false
+    while (!n) {
+        println("Please input operation (encode/decode/exit):")
+        val operation = readln()
+        if (operation == "exit") {
+            println("Bye!")
+            n = true
+        } else if (operation == "encode") {
+            println("Input string:")
+            val inp = readln()
+            encode(inp)
+        } else if (operation == "decode") {
+            println("Input encoded string:")
+            val inp = readln()
+            if (check(inp)) println("Encoded string is not valid.\n")
+            else if (checkDecode(inp)) println("Encoded string is not valid.\n")
+            else decode(inp)
+        } else println("There is no '$operation' operation")
+    }
+}
+
+fun check(inp: String): Boolean {
+    val list = inp.split(" ")
+    var count = 0
+    val regex = """0|0{2}""".toRegex()
+    for (i in inp) if (i != '0' && i != ' ') count++
+    for (i in list.indices step 4) if (!regex.matches(list[i])) count++
+    return inp.split(" ").size % 2 != 0 || count != 0// || inp.split(" ").size % 4 != 0
+}
+
+fun checkDecode(inp: String): Boolean {
+    val input = inp.split(" ").toList()
+    val list = mutableListOf<String>()
+    for (i in input.indices step 2) {
+        if (input[i] == "0") list.add("1".repeat(input[i + 1].length))
+        if (input[i] == "00") list.add("0".repeat(input[i + 1].length))
+    }
+    return list.joinToString("").length % 7 != 0
+}
+
+fun decode(inp: String) {
+    val input = inp.split(" ").toList()
+    val list = mutableListOf<String>()
+    for (i in input.indices step 2) {
+        if (input[i] == "0") list.add("1".repeat(input[i + 1].length))
+        if (input[i] == "00") list.add("0".repeat(input[i + 1].length))
+    }
+    val list2 = list.joinToString("")
+    val list3 = mutableListOf<Char>()
+    for (i in 0 until list.joinToString("").length step 7) {
+        val result = (list2[i] + list2[i + 1].toString() + list2[i + 2] + list2[i + 3] + list2[i + 4] + list2[i + 5] + list2[i + 6]).toInt(2).toChar()
+        list3.add(result)
+    }
+    println("Decoded string:")
+    println(list3.joinToString(""))
+}
+
+fun encode(inp: String) {
+    val input = inp.toList()
+    var str = ""
+    println("Encoded string:")
+    for (i in input) str += String.format("%07d", i.code.toString(2).toInt())
+    val one = str.replace(Regex("""0"""), " ").split(" ").toMutableList()
+    val zero = str.replace(Regex("""1"""), " ").split(" ").toMutableList()
+    val listResult = mutableListOf<String>()
+
+    val one2 = mutableListOf<String>()
+    val zero2 = mutableListOf<String>()
+    for (i in one) if (i != "") one2.add(i)
+    for (i in zero) if (i != "") zero2.add(i)
+
+    if (str.first() == '1') {
+        if (str.last() == '1') {
+            for (i in 0 until one2.size - 1) {
+                listResult.add(one2[i])
+                listResult.add(zero2[i])
+            }
+            listResult.add(one2.last())
+        } else if (str.last() == '0') {
+            for (i in one2.indices) {
+                listResult.add(one2[i])
+                listResult.add(zero2[i])
+            }
+        }
+    } else if (str.first() == '0') {
+        if (str.last() == '0') {
+            for (i in 0 until zero2.size - 1) {
+                listResult.add(zero2[i])
+                listResult.add(one2[i])
+            }
+            listResult.add(zero2.last())
+        } else if (str.last() == '1') {
+            for (i in zero2.indices) {
+                listResult.add(zero2[i])
+                listResult.add(one2[i])
+            }
+        }
+    }
+
+    for (i in 0 until listResult.size) {
+        var result: String
+        if (listResult[i].first() == '1') {
+            result = "0 " + "0".repeat(listResult[i].length)
+            listResult[i] = result
+        } else if (listResult[i].first() == '0') {
+            result = "00 " + "0".repeat(listResult[i].length)
+            listResult[i] = result
+        }
+    }
+    println(listResult.joinToString(" "))
+}
