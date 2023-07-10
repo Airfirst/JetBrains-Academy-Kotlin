@@ -1,0 +1,405 @@
+package processor
+
+import java.math.RoundingMode
+import kotlin.math.pow
+
+fun main() {
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    fun add() {
+        print("Enter size of first matrix: ")
+        val size1 = readln().split(" ")
+        val i = size1[0].toInt()
+        val j = size1[1].toInt()
+        println("Enter first matrix:")
+        val array1: MutableList<MutableList<String>> = mutableListOf()
+        for (t in 0 until i) {
+            val strings = readln().split(' ').toMutableList()
+            array1 += strings
+        }
+
+        print("Enter size of second matrix: ")
+        val size2 = readln().split(" ")
+        val m = size2[0].toInt()
+        println("Enter second matrix:")
+        val array2: MutableList<MutableList<String>> = mutableListOf()
+        for (t in 0 until m) {
+            val strings = readln().split(' ').toMutableList()
+            array2 += strings
+        }
+
+        val outputArray = MutableList(i) { MutableList(j) { 0.0 } }
+
+        println("The result is:")
+        if (size1 == size2) {
+            for (k in 0 until i) {
+                for (t in 0 until j) {
+                    outputArray[k][t] = array1[k][t].toDouble() + array2[k][t].toDouble()
+                    print(outputArray[k][t])
+                    print(" ")
+                }
+                println("")
+            }
+        } else println("The operation cannot be performed.")
+        println("")
+    }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    fun multConst() {
+        print("Enter size of matrix: ")
+        val size1 = readln().split(" ")
+        val i = size1[0].toInt()
+        val j = size1[1].toInt()
+        println("Enter matrix: ")
+
+
+        val inputArray: MutableList<MutableList<String>> = mutableListOf()
+        for (t in 0 until i) {
+            val strings = readln().split(' ').toMutableList()
+            inputArray += strings
+        }
+        val outputArray = MutableList(i) { MutableList(j) { 0.0 } }
+
+        print("Enter constant: ")
+        val const = readln().toDouble()
+
+        println("The result is:")
+        for (k in 0 until i) {
+            for (t in 0 until j) {
+                outputArray[k][t] =  const * inputArray[k][t].toDouble()
+                print(outputArray[k][t])
+                print(" ")
+            }
+            println("")
+        }
+        println("")
+    }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    fun mult() {
+        print("Enter size of first matrix: ")
+        val size1 = readln().split(" ")
+        val i = size1[0].toInt()
+        val j = size1[1].toInt()
+        println("Enter first matrix:")
+        val array1: MutableList<MutableList<String>> = mutableListOf()
+        for (t in 0 until i) {
+            val strings = readln().split(' ').toMutableList()
+            array1 += strings
+        }
+
+        print("Enter size of second matrix: ")
+        val size2 = readln().split(" ")
+        val m = size2[0].toInt()
+        val n = size2[1].toInt()
+        println("Enter second matrix:")
+        val array2: MutableList<MutableList<String>> = mutableListOf()
+        for (t in 0 until m) {
+            val strings = readln().split(' ').toMutableList()
+            array2 += strings
+        }
+
+        println("The result is:")
+        val array3 = MutableList(i) { MutableList(n) { 0.0 } }
+
+        for (k in 0 until i) {
+            for (t in 0 until n) {
+                for (p in 0 until j) {
+                    array3[k][t] += array1[k][p].toDouble() * array2[p][t].toDouble()
+                }
+                print(array3[k][t])
+                print(" ")
+            }
+            println("")
+        }
+        println("")
+    }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    fun trans() {
+        fun main() {
+            print("Enter matrix size: ")
+            val size1 = readln().split(" ")
+            val i = size1[0].toInt()
+            val j = size1[1].toInt()
+            println("Enter matrix:")
+            val matrix: MutableList<MutableList<String>> = mutableListOf()
+            for (t in 0 until i) {
+                val strings = readln().split(' ').toMutableList()
+                matrix += strings
+            }
+            val matrix2 = MutableList(i) { MutableList(j) { "0" } }
+
+            println("The result is:")
+            for (k in 0 until i) {
+                for (t in 0 until j) {
+                    matrix2[k][t] = matrix[t][k]
+                    print(matrix2[k][t])
+                    print(" ")
+                }
+                println("")
+            }
+            println("")
+        }
+
+        fun side() {
+            print("Enter matrix size: ")
+            val size1 = readln().split(" ")
+            val i = size1[0].toInt()
+            val j = size1[1].toInt()
+            println("Enter matrix:")
+            val matrix: MutableList<MutableList<String>> = mutableListOf()
+            for (t in 0 until i) {
+                val strings = readln().split(' ').toMutableList()
+                matrix += strings
+            }
+            val matrix2 = MutableList(i) { MutableList(j) { "0" } }
+
+            println("The result is:")
+            for (k in i - 1 downTo 0) {
+                for (t in j-1 downTo 0) {
+                    matrix2[k][t] = matrix[t][k]
+                    print(matrix2[k][t])
+                    print(" ")
+                }
+                println("")
+            }
+            println("")
+        }
+
+        fun vertical() {
+            print("Enter matrix size: ")
+            val size1 = readln().split(" ")
+            val i = size1[0].toInt()
+            val j = size1[1].toInt()
+            println("Enter matrix:")
+            val matrix: MutableList<MutableList<String>> = mutableListOf()
+            for (t in 0 until i) {
+                val strings = readln().split(' ').toMutableList()
+                matrix += strings
+            }
+            val matrix2 = MutableList(i) { MutableList(j) { "0" } }
+
+            println("The result is:")
+            for (k in 0 until i) {
+                for (t in j-1 downTo 0) {
+                    matrix2[k][t] = matrix[k][t]
+                    print(matrix2[k][t])
+                    print(" ")
+                }
+                println("")
+            }
+            println("")
+        }
+
+        fun horizontal() {
+            print("Enter matrix size: ")
+            val size1 = readln().split(" ")
+            val i = size1[0].toInt()
+            val j = size1[1].toInt()
+            println("Enter matrix:")
+            val matrix: MutableList<MutableList<String>> = mutableListOf()
+            for (t in 0 until i) {
+                val strings = readln().split(' ').toMutableList()
+                matrix += strings
+            }
+            val matrix2 = MutableList(i) { MutableList(j) { "0" } }
+
+            println("The result is:")
+            for (k in i-1 downTo 0) {
+                for (t in 0 until j) {
+                    matrix2[k][t] = matrix[k][t]
+                    print(matrix2[k][t])
+                    print(" ")
+                }
+                println("")
+            }
+            println("")
+        }
+
+
+
+        println("""1. Main diagonal
+2. Side diagonal
+3. Vertical line
+4. Horizontal line
+5. Calculate a determinant
+    """.trimIndent()
+        )
+        print("Your choice: ")
+        when (readln()) {
+            "1" -> main()
+            "2" -> side()
+            "3" -> vertical()
+            "4" -> horizontal()
+        }
+    }
+//----------------------------------------------------------------------------------------------------------
+    fun minor(array: MutableList<MutableList<Double>>, j: Int): MutableList<MutableList<Double>> {
+        val result = mutableListOf<MutableList<Double>>()
+        for (k in 1 until array.size) {
+            val row = array[k].toMutableList()
+            row.removeAt(j)
+            result.add(row)
+        }
+        return result
+    }
+
+    fun det2(outAr: MutableList<MutableList<Double>>, j: Int): Double {
+        return if (j == 2) {
+            outAr[j - 2][j - 2] * outAr[j - 1][j - 1] - outAr[j - 2][j - 1] * outAr[j - 1][j - 2]
+        } else {
+            var determinant2 = 0.0
+            for (jj in 0 until outAr.size) {
+                determinant2 += outAr[0][jj] * (-1.0).pow(1 + jj + 1) * det2(minor(outAr, jj), outAr.size - 1)
+            }
+            determinant2
+        }
+    }
+
+    fun calcDet(outAr: MutableList<MutableList<Double>>, i: Int): Double {
+        var determinant = 0.0
+
+        det2(outAr, i)
+
+        fun det3(outAr: MutableList<MutableList<Double>>, j: Int): Double {
+            return if (j == 3) {
+                val a = outAr[j - 3][j - 3] * outAr[j - 2][j - 2] * outAr[j - 1][j - 1] +
+                        outAr[j - 2][j - 3] * outAr[j - 1][j - 2] * outAr[j - 3][j - 1] +
+                        outAr[j - 3][j - 2] * outAr[j - 2][j - 1] * outAr[j - 1][j - 3] -
+                        outAr[j - 1][j - 3] * outAr[j - 2][j - 2] * outAr[j - 3][j - 1] -
+                        outAr[j - 1][j - 2] * outAr[j - 2][j - 1] * outAr[j - 3][j - 3] -
+                        outAr[j - 2][j - 3] * outAr[j - 3][j - 2] * outAr[j - 1][j - 1]
+                a
+            } else {
+                var determinant2 = 0.0
+                for (jj in 0 until outAr.size) {
+                    determinant2 += outAr[0][jj] * (-1.0).pow(1 + jj + 1) * det3(minor(outAr, jj), outAr.size - 1)
+                }
+                determinant2
+            }
+        }
+
+        when (i) {
+            2 -> {
+                determinant = det2(outAr, i)
+            }
+            3 -> {
+                determinant = det3(outAr, i)
+            }
+            else -> {
+                for (jj in 0 until outAr.size) {
+                    determinant += outAr[0][jj] * (-1.0).pow(1 + jj + 1) * det2(minor(outAr, jj), outAr.size - 1)
+                }
+            }
+        }
+        return determinant
+    }
+//------------------------------------------------------------------------------------------
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    fun det() {
+        print("Enter matrix size: ")
+        val size1 = readln().split(" ")
+        val i = size1[0].toInt()
+        val j = size1[1].toInt()
+        println("Enter matrix: ")
+
+        val inputArray: MutableList<MutableList<String>> = mutableListOf()
+        for (t in 0 until i) {
+            val strings = readln().split(' ').toMutableList()
+            inputArray += strings
+        }
+        val outAr = MutableList(i) { MutableList(j) { 0.0 } }
+
+        for (k in 0 until i) {
+            for (t in 0 until j) {
+                outAr[k][t] = inputArray[k][t].toDouble()
+            }
+        }
+        println("The result is:")
+        println(calcDet(outAr, i))
+        println("")
+    }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    fun inv() {
+        print("Enter size of matrix: ")
+        val size1 = readln().split(" ")
+        val i = size1[0].toInt()
+        val j = size1[1].toInt()
+        println("Enter matrix: ")
+
+        val inputArray: MutableList<MutableList<String>> = mutableListOf()
+        for (t in 0 until i) {
+            val strings = readln().split(' ').toMutableList()
+            inputArray += strings
+        }
+        val outputArray = MutableList(i) { MutableList(j) { 0.0 } }
+
+        for (k in 0 until i) {
+            for (t in 0 until j) {
+                outputArray[k][t] = inputArray[k][t].toDouble()
+            }
+        }
+
+        fun minor2(array: MutableList<MutableList<Double>>, i: Int, j: Int): MutableList<MutableList<Double>> {
+            val result = mutableListOf<MutableList<Double>>()
+            for (k in 0 until array.size) {
+                val row = array[k].toMutableList()
+                row.removeAt(j)
+                result.add(row)
+            }
+            result.removeAt(i)
+            return result
+        }
+
+        println("The result is:")
+        val det = calcDet(outputArray, i)
+        if (det == 0.0) {
+            println("This matrix doesn't have an inverse.")
+        } else {
+            val coFactMatrix = MutableList(i) { MutableList(j) { 0.0 } }
+            for (k in 0 until i) {
+                for (t in 0 until j) {
+                    coFactMatrix[k][t] = (-1.0).pow(k + t) * det2(minor2(outputArray, k, t), outputArray.size - 1)
+                }
+            }
+
+            val coFactMatrix2 = MutableList(i) { MutableList(j) { 0.0 } }
+
+            for (k in 0 until i) {
+                for (t in 0 until j) {
+                    coFactMatrix2[k][t] = coFactMatrix[t][k]
+                }
+            }
+
+            for (k in 0 until i) {
+                for (t in 0 until j) {
+                    outputArray[k][t] = (1 / det * coFactMatrix2[k][t])
+                    print(outputArray[k][t].toBigDecimal().setScale(2, RoundingMode.DOWN))
+                    print(" ")
+                }
+                println("")
+            }
+        }
+        println("")
+    }
+
+    var n = 0
+    while (n == 0) {
+        println("""1. Add matrices
+2. Multiply matrix by a constant
+3. Multiply matrices
+4. Transpose matrix
+5. Calculate a determinant
+6. Inverse matrix
+0. Exit
+    """.trimIndent()
+        )
+        print("Your choice: ")
+        when (readln()) {
+            "1" -> add()
+            "2" -> multConst()
+            "3" -> mult()
+            "4" -> trans()
+            "5" -> det()
+            "6" -> inv()
+            "0" -> n = 1
+        }
+    }
+}
