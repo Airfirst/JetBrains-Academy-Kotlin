@@ -1,0 +1,358 @@
+package org.hyperskill.calculator
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import android.text.InputType
+import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
+
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    private lateinit var textField: EditText
+    private lateinit var test: EditText
+
+    @SuppressLint("CutPasteId", "MissingInflatedId")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        textField = findViewById(R.id.displayEditText)
+        textField.inputType = InputType.TYPE_NULL
+
+        test = findViewById(R.id.testText)
+        test.inputType = InputType.TYPE_NULL
+
+        val but7: Button = findViewById(R.id.button7)
+        but7.setOnClickListener(this)
+        val but8: Button = findViewById(R.id.button8)
+        but8.setOnClickListener(this)
+        val but9: Button = findViewById(R.id.button9)
+        but9.setOnClickListener(this)
+        val but4: Button = findViewById(R.id.button4)
+        but4.setOnClickListener(this)
+        val but5: Button = findViewById(R.id.button5)
+        but5.setOnClickListener(this)
+        val but6: Button = findViewById(R.id.button6)
+        but6.setOnClickListener(this)
+        val but1: Button = findViewById(R.id.button1)
+        but1.setOnClickListener(this)
+        val but2: Button = findViewById(R.id.button2)
+        but2.setOnClickListener(this)
+        val but3: Button = findViewById(R.id.button3)
+        but3.setOnClickListener(this)
+        val but0: Button = findViewById(R.id.button0)
+        but0.setOnClickListener(this)
+        val butDot: Button = findViewById(R.id.dotButton)
+        butDot.setOnClickListener(this)
+        val clear: Button = findViewById(R.id.clearButton)
+        clear.setOnClickListener(this)
+        val equal: Button = findViewById(R.id.equalButton)
+        equal.setOnClickListener(this)
+
+        val btnAdd: Button = findViewById(R.id.addButton)
+        val btnSubtract: Button = findViewById(R.id.subtractButton)
+        val btnMultiply: Button = findViewById(R.id.multiplyButton)
+        val btnDivide: Button = findViewById(R.id.divideButton)
+
+        btnAdd.setOnClickListener(this)
+        btnSubtract.setOnClickListener(this)
+        btnMultiply.setOnClickListener(this)
+        btnDivide.setOnClickListener(this)
+    }
+
+    var term1 = 0.0
+    var activator = 0
+    var marker = 0
+    var marker2 = 0
+    var markerEqual = 0     // для повторного ровно
+    var termForEqual = ""     // для повторного ровно
+
+    @SuppressLint("SetTextI18n")
+    override fun onClick(view: View?) {
+
+        val input = textField.text.toString()
+        var n = 0
+
+        for (i in input) {
+            if (i == '.') n++
+        }
+        if ((n < 1) && (view?.id == R.id.dotButton) && (input.isNotEmpty())) {
+            if (input == "-") textField.setText(input + "0.") else textField.setText(input + ".")
+        }
+
+        else if ((input.isEmpty() && (view?.id == R.id.dotButton))) textField.setText(input + "0.")
+
+        if (view?.id == R.id.button0 && input == "-") textField.setText("-")
+        else if (input != "0" && view?.id == R.id.button0) {
+            textField.setText(input + "0")
+            marker = 0
+        }
+
+        when (view?.id) {
+            R.id.button1 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "1")
+                marker = 0
+            }
+            R.id.button2 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "2")
+                marker = 0
+            }
+            R.id.button3 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "3")
+                marker = 0
+            }
+            R.id.button4 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "4")
+                marker = 0
+            }
+            R.id.button5 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "5")
+                marker = 0
+            }
+            R.id.button6 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "6")
+                marker = 0
+            }
+            R.id.button7 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "7")
+                marker = 0
+            }
+            R.id.button8 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "8")
+                marker = 0
+            }
+            R.id.button9 -> {
+                if (input == "0") textField.setText("")
+                textField.setText(textField.text.toString() + "9")
+                marker = 0
+            }
+            R.id.clearButton -> {                //clear
+                textField.setText("")
+                textField.hint = "0"
+                term1 = 0.0
+                marker = 0
+                marker2 = 0
+                markerEqual = 0
+            }
+
+            R.id.equalButton -> {                 //=
+                if (markerEqual == 3) calc2(termForEqual)  //calc2()         функция, которая высчитывает при повторном нажантии "="
+                else {
+                    calc()
+
+                    val reg = ".*\\.0+".toRegex()
+                    if (reg.matches(textField.text)) textField.hint = "${textField.text.toString().toDouble().toInt()}"
+
+                    termForEqual = textField.text.toString()
+                    textField.setText("")
+                }
+                markerEqual = 3                   // ставиться, если было нажато ровно для повторного нажатия ровно
+                marker = 0
+            }
+
+            R.id.addButton -> {
+                markerEqual = 0          //сброс режима повторного ровно
+                activator = 1
+                marker = 1
+                if (textField.text.isEmpty()) {
+                    term1 = textField.hint.toString().toDouble()
+                } else {
+                    if (term1 == 0.0) { textField.hint = textField.text.toString() }
+                    else textField.hint = "${term1 + textField.text.toString().toDouble()}"
+                }
+                
+                dot()
+
+                term1 = textField.hint.toString().toDouble()
+                textField.setText("")
+            }
+            R.id.subtractButton -> {
+                markerEqual = 0          //сброс режима повторного ровно
+                if (marker2 == 2) term1 = textField.hint.toString().toDouble()
+                else {
+                    if (textField.text.isEmpty() && textField.hint == "0" && term1.toInt() == 0) marker = 1
+                    if (marker == 1) {
+                        textField.setText("-")
+                        marker = 0
+                    } else {
+                        activator = 2
+                        marker = 1
+                        if (textField.text.isEmpty()) {
+                            term1 = textField.hint.toString().toDouble()
+
+                        } else {
+                            if (term1 == 0.0) {
+                                textField.hint = textField.text.toString()
+                            } else textField.hint =
+                                "${term1 - textField.text.toString().toDouble()}"
+                        }
+
+                        dot()
+
+                        term1 = textField.hint.toString().toDouble()
+                        textField.setText("")
+                    }
+                }
+
+            }
+            R.id.multiplyButton -> {
+                markerEqual = 0          //сброс режима повторного ровно
+                activator = 3
+                marker = 1
+                if (textField.text.toString().isEmpty()) {
+                    term1 = textField.hint.toString().toDouble()
+                } else {
+                    if (term1 == 0.0) { textField.hint = textField.text.toString() }
+                    else { textField.hint = "${term1 * textField.text.toString().toDouble()}" }
+                }
+                dot()
+                term1 = textField.hint.toString().toDouble()
+                textField.setText("")
+            }
+            R.id.divideButton -> {
+                markerEqual = 0          //сброс режима повторного ровно
+                activator = 4
+                marker = 1
+                if (textField.text.toString().isEmpty()) {
+                    term1 = textField.hint.toString().toDouble()
+                } else {
+                    if (term1 == 0.0) { textField.hint = textField.text.toString() }
+                    else { textField.hint = (term1 / textField.text.toString().toDouble()).toString() }
+                }
+                dot()
+                term1 = textField.hint.toString().toDouble()
+                textField.setText("")
+            }
+        }
+    }
+
+    private fun calc() {
+        val reg = ".*\\.0+".toRegex()
+        when (activator) {
+            1 -> {
+                if (marker == 1) {
+                    term1 = textField.hint.toString().toDouble()
+                    val result = "${term1 + term1}"
+                    textField.hint =
+                        if (reg.matches(result)) "${
+                            (term1 + term1).toInt()
+                        }"
+                        else "${term1 + term1}"
+                    marker = 0
+                } else {
+                    val result = "${term1 + textField.text.toString().toDouble()}"
+                    textField.hint =
+                        if (reg.matches(result)) "${
+                            (term1 + textField.text.toString().toDouble()).toInt()
+                        }"
+                        else "${term1 + textField.text.toString().toDouble()}"
+                }
+            }
+            2 -> {
+                if (marker == 2) {
+                    //term1 = textField.hint.toString().toDouble()
+                    val result = "${term1 - term1}"
+                    textField.hint =
+                        if (reg.matches(result)) "${
+                            (term1 - term1).toInt()
+                        }"
+                        else "${term1 - term1}"
+                    marker = 0
+                } else {
+                    textField.hint = "${term1 - textField.text.toString().toDouble()}"
+                }
+            }
+
+            3 -> {
+                if (marker ==1) {
+                    term1 = textField.hint.toString().toDouble()
+                    val result = "${term1 * term1}"
+                    textField.hint =
+                        if (reg.matches(result)) "${
+                            (term1 * term1).toInt()
+                        }"
+                        else "${term1 * term1}"
+                    marker = 0
+                } else {
+                    val result = "${term1 * textField.text.toString().toDouble()}"
+                    textField.hint =
+                        if (reg.matches(result)) "${
+                            (term1 * textField.text.toString().toDouble()).toInt()
+                        }"
+                        else "${term1 * textField.text.toString().toDouble()}"
+                }
+            }
+            4 -> {
+                if (marker ==1) {
+                    term1 = textField.hint.toString().toDouble()
+                    val result = "${term1 / term1}"
+                    textField.hint =
+                        if (reg.matches(result)) "${
+                            (term1 / term1).toInt()
+                        }"
+                        else "${term1 / term1}"
+                    marker = 0
+                } else {
+                    val result = "${term1 / textField.text.toString().toDouble()}"
+                    textField.hint =
+                        if (reg.matches(result)) "${
+                            (term1 / textField.text.toString().toDouble()).toInt()
+                        }"
+                        else "${term1 / textField.text.toString().toDouble()}"
+                }
+            }
+        }
+    }
+
+    private fun calc2(termForEqual: String) {
+        val reg = ".*\\.0+".toRegex()
+        term1 = textField.hint.toString().toDouble()
+        when (activator) {
+            1 -> {
+                val result = "${term1 + termForEqual.toDouble()}"
+                textField.hint =
+                    if (reg.matches(result)) "${
+                    (term1 + termForEqual.toDouble()).toInt()
+                    }"
+                    else "${term1 + termForEqual.toDouble()}"
+            }
+            2 -> {val result = "${term1 - termForEqual.toDouble()}"
+                textField.hint =
+                    if (reg.matches(result)) "${
+                        (term1 - termForEqual.toDouble()).toInt()
+                    }"
+                    else "${term1 - termForEqual.toDouble()}"}
+            3 -> {
+                val result = "${term1 * termForEqual.toDouble()}"
+                textField.hint =
+                    if (reg.matches(result)) "${
+                        (term1 * termForEqual.toDouble()).toInt()
+                    }"
+                    else "${term1 * termForEqual.toDouble()}"
+            }
+            4 -> {
+                val result = "${term1 / termForEqual.toDouble()}"
+                textField.hint =
+                    if (reg.matches(result)) "${
+                        (term1 / termForEqual.toDouble()).toInt()
+                    }"
+                    else "${term1 / termForEqual.toDouble()}"
+            }
+        }
+    }
+
+    private fun dot() { //функция, которая убирает лишнией ноль с точкой
+        val reg = ".*\\.0+".toRegex()
+        if (reg.matches(textField.text)) textField.hint = "${textField.text.toString().toDouble().toInt()}"
+    }
+}
